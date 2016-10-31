@@ -1,126 +1,6 @@
 # Linux命令必知必会
 
-
-## 使用pushd和popd命令快速切换目录
-经常会有这么一种情况，我们会在不同目录中进行频繁的切换，如果目录很深，那么使用`cd`命令的工作量是不小的，这时可以使用`pushd`和`popd`命令快速切换目录。
-
-
-    $ pwd
-    /Users/mylxsw/codes/php/lecloud/api
-    $ pushd .
-    ~/codes/php/lecloud/api ~/codes/php/lecloud/api
-    $ cd ../album/
-    $ pwd
-    /Users/mylxsw/codes/php/lecloud/album
-    $ popd
-    ~/codes/php/lecloud/api
-    $ pwd
-    /Users/mylxsw/codes/php/lecloud/api
-
-
-<!--more-->
-
-## 创建软连接的时候出现`Too many levels of symbolic links`的错误信息   
-
-创建软连接的时候使用绝对路径就可以解决，不要使用相对路径。
-
-    localhost:~ mylxsw$ ln -s /Users/mylxsw/其它/app /Users/mylxsw/app
-
-## 使用SCP命令在服务器和本地计算机之间传递文件
-
-    usage: scp [-12346BCEpqrv] [-c cipher] [-F ssh_config] [-i identity_file]
-               [-l limit] [-o ssh_option] [-P port] [-S program]
-               [[user@]host1:]file1 ... [[user@]host2:]file2
-
-
-从服务器下载文件
-
-    scp username@服务器地址:/path/文件名 本地保存路径
-
-上传文件到服务器
-
-    scp 本地文件路径 username@服务器地址:/保存到服务器的路径
-
-> Tip: 如果要操作的对象是整个目录的话，需要添加`-t`参数。
-
-使用范例:
-
-
-    localhost:Downloads mylxsw$ scp guanyy@10.10.10.10:/home/guanyy/download.db ./
-    guanyy@10.10.10.10's password:
-    download.db                                   100%   25MB  24.7MB/s   00:01
-
-
-## Mac OS 清理DNS缓存
-
-    dscacheutil -flushcache
-
-
-## Cent OS服务器安装PHP的pecl
-想要安装某个PHP扩展，但发现服务器上没有pecl，因此需要安装pecl。
-
-    $ sudo yum install php-pear
-
-安装pear之后，pecl就有了。
-
-## 在当前目录下查找大小超过100MB的文件
-
-    find . -type f -size +100M
-
-## 转换iso格式为dmg
-
-    hdiutil convert -format UDRW -o ubuntu-16.04-desktop-amd64.img ubuntu-16.04-desktop-amd64.iso
-
-## 查看磁盘设备
-
-    diskutil list
-
-> 卸载磁盘： `diskutil umountDisk /dev/disk1`
-
-## 拷贝镜像到U盘
-
-    dd if=yourimage.img of=/dev/sdb1
-
-
-## 使用基于文本的图形界面配置命令setup
-安装setup命令
-
-    $ sudo yum install setuptool
-
-
-安装之后，需要安装一些常见的系统配置组件，也是使用yum：
-
-    $ sudo yum install system-config-services system-config-firewall system-config-network-tui
-
-
-更多的配置组件可以使用`yum search system-config`命令查看，进入配置界面直接使用`setup`命令。
-
-## 使用sed批量操作文件
-
-下面这个命令实现了批量把符合`.env*`规则的文件中，删除包含`APP_TIMEZONE`的行，追加两行新的配置
-
-    find . -name '.env*' -exec sed -i '' -e '/APP_TIMEZONE/d' -e '$ a \
-    DB_TIMEZONE=+08:00\
-    APP_TIME_ZONE=PRC\
-    ' {} \;
-    
-下面的命令实现了批量替换符合`.env*`规则的文件中的`APP_TIME_ZONE`为`APP_TIMEZONE`
-
-    find . -name '.env*' -exec sed -i '' -e 's/APP_TIME_ZONE/APP_TIMEZONE/' {} \;
-
-## 查看路由规则
-
-    [root@tristan]# route -n
-    Kernel IP routing table
-    Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
-    192.168.99.0    0.0.0.0         255.255.255.0   U     0      0        0 eth0
-    127.0.0.0       0.0.0.0         255.0.0.0       U     0      0        0 lo
-    0.0.0.0         192.168.99.254  0.0.0.0         UG    0      0        0 eth0
-    [root@tristan]# ip route show
-    192.168.99.0/24 dev eth0  scope link 
-    127.0.0.0/8 dev lo  scope link 
-    default via 192.168.99.254 dev eth0
-
+[TOC]
 
 ## top命令
 监控系统的运行状态，并且可以按照cpu、内存、执行时间进行排序。
@@ -779,6 +659,120 @@ unzip命令用于解压`.zip`文件，常用参数如下
 
     # unzip -u -o -d /var/www test.zip
     # chown -R www:www /var/www
+
+
+## 使用pushd和popd命令快速切换目录
+经常会有这么一种情况，我们会在不同目录中进行频繁的切换，如果目录很深，那么使用`cd`命令的工作量是不小的，这时可以使用`pushd`和`popd`命令快速切换目录。
+
+
+    $ pwd
+    /Users/mylxsw/codes/php/lecloud/api
+    $ pushd .
+    ~/codes/php/lecloud/api ~/codes/php/lecloud/api
+    $ cd ../album/
+    $ pwd
+    /Users/mylxsw/codes/php/lecloud/album
+    $ popd
+    ~/codes/php/lecloud/api
+    $ pwd
+    /Users/mylxsw/codes/php/lecloud/api
+
+## SCP
+
+在服务器和本地计算机之间传递文件
+
+    usage: scp [-12346BCEpqrv] [-c cipher] [-F ssh_config] [-i identity_file]
+               [-l limit] [-o ssh_option] [-P port] [-S program]
+               [[user@]host1:]file1 ... [[user@]host2:]file2
+
+
+从服务器下载文件
+
+    scp username@服务器地址:/path/文件名 本地保存路径
+
+上传文件到服务器
+
+    scp 本地文件路径 username@服务器地址:/保存到服务器的路径
+
+> Tip: 如果要操作的对象是整个目录的话，需要添加`-t`参数。
+
+使用范例:
+
+
+    localhost:Downloads mylxsw$ scp guanyy@10.10.10.10:/home/guanyy/download.db ./
+    guanyy@10.10.10.10's password:
+    download.db                                   100%   25MB  24.7MB/s   00:01
+
+
+## Mac OS 清理DNS缓存
+
+    dscacheutil -flushcache
+
+
+## Cent OS服务器安装PHP的pecl
+想要安装某个PHP扩展，但发现服务器上没有pecl，因此需要安装pecl。
+
+    $ sudo yum install php-pear
+
+安装pear之后，pecl就有了。
+
+## 在当前目录下查找大小超过100MB的文件
+
+    find . -type f -size +100M
+
+## 转换iso格式为dmg
+
+    hdiutil convert -format UDRW -o ubuntu-16.04-desktop-amd64.img ubuntu-16.04-desktop-amd64.iso
+
+## 查看磁盘设备
+
+    diskutil list
+
+> 卸载磁盘： `diskutil umountDisk /dev/disk1`
+
+## 拷贝镜像到U盘
+
+    dd if=yourimage.img of=/dev/sdb1
+
+
+## 使用基于文本的图形界面配置命令setup
+安装setup命令
+
+    $ sudo yum install setuptool
+
+
+安装之后，需要安装一些常见的系统配置组件，也是使用yum：
+
+    $ sudo yum install system-config-services system-config-firewall system-config-network-tui
+
+
+更多的配置组件可以使用`yum search system-config`命令查看，进入配置界面直接使用`setup`命令。
+
+## 使用sed批量操作文件
+
+下面这个命令实现了批量把符合`.env*`规则的文件中，删除包含`APP_TIMEZONE`的行，追加两行新的配置
+
+    find . -name '.env*' -exec sed -i '' -e '/APP_TIMEZONE/d' -e '$ a \
+    DB_TIMEZONE=+08:00\
+    APP_TIME_ZONE=PRC\
+    ' {} \;
+    
+下面的命令实现了批量替换符合`.env*`规则的文件中的`APP_TIME_ZONE`为`APP_TIMEZONE`
+
+    find . -name '.env*' -exec sed -i '' -e 's/APP_TIME_ZONE/APP_TIMEZONE/' {} \;
+
+## 查看路由规则
+
+    [root@tristan]# route -n
+    Kernel IP routing table
+    Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+    192.168.99.0    0.0.0.0         255.255.255.0   U     0      0        0 eth0
+    127.0.0.0       0.0.0.0         255.0.0.0       U     0      0        0 lo
+    0.0.0.0         192.168.99.254  0.0.0.0         UG    0      0        0 eth0
+    [root@tristan]# ip route show
+    192.168.99.0/24 dev eth0  scope link 
+    127.0.0.0/8 dev lo  scope link 
+    default via 192.168.99.254 dev eth0
 
 
 [Perf -- Linux下的系统性能调优工具]:http://www.ibm.com/developerworks/cn/linux/l-cn-perf1/
