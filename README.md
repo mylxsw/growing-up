@@ -1,3 +1,4 @@
 # 程序猿成长计划
 
-- [三十分钟学会AWK](/growing-up/三十分钟学会AWK.md)
+- [三十分钟学会AWK](/三十分钟学会AWK.md)
+- [Docker学习笔记-基础命令](/Docker学习笔记-基础命令.md)
