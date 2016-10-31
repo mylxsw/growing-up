@@ -7,5 +7,7 @@
 - [三十分钟学会SED](/doc/三十分钟学会SED.md)
 - [Linux命令必知必会](/doc/Linux命令必知必会.md)
 - [跟我一起学Laravel-数据库操作和查询构造器](/doc/跟我一起学Laravel-数据库操作和查询构造器.md)
-- [跟我一起学Laravel-EloquentORM](/doc/跟我一起学Laravel-EloquentORM.md)
+- [跟我一起学Laravel-EloquentORM基础部分](/doc/跟我一起学Laravel-EloquentORM基础部分.md)
+- [跟我一起学Laravel-EloquentORM基础部分](/doc/跟我一起学Laravel-EloquentORM进阶部分.md)
+- [跟我一起学Laravel-EloquentORM基础部分](/doc/跟我一起学Laravel-EloquentORM高级部分.md)
 - [跟我一起学Laravel-常见问题](/doc/跟我一起学Laravel-常见问题.md)
