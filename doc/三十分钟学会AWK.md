@@ -823,7 +823,7 @@ AWK支持关联数组，也就是说，不仅可以使用数字索引的数组�
 
 ## 循环
 
-循环操作与其他C系语言一样，主要包括 `for`，`whlie`，`do...while`，`break`，`continue` 语句，当然，还有一个 `exit`语句用于退出脚本执行。
+循环操作与其他C系语言一样，主要包括 `for`，`while`，`do...while`，`break`，`continue` 语句，当然，还有一个 `exit`语句用于退出脚本执行。
 
     for (initialisation; condition; increment/decrement)
        action
