@@ -1,5 +1,9 @@
 # 三十分钟学会AWK
 
+![](https://oayrssjpa.qnssl.com/wp-content/uploads/2016/11/FullSizeRender-3-1024x682.jpg)
+
+[TOC]
+
 本文大部分内容翻译自我开始学习AWK时看到的一篇英文文章 [AWK Tutorial](https://www.tutorialspoint.com/awk/index.htm) ，觉得对AWK入门非常有帮助，所以对其进行了粗略的翻译，并对其中部分内容进行了删减或者补充，希望能为对AWK感兴趣的小伙伴提供一份快速入门的教程，帮助小伙伴们快速掌握AWK的基本使用方式，当然，我也是刚开始学习AWK，本文在翻译或者补充的过程中肯定会有很多疏漏或者错误，希望大家能够帮忙指正。
 
 本文将会持续修正和更新，最新内容请参考我的 [GITHUB](https://github.com/mylxsw) 上的 [程序猿成长计划](https://github.com/mylxsw/growing-up) 项目，欢迎 Star。
@@ -1200,3 +1204,5 @@ AWK中可以使用`|&`进行**双向连接**，那么什么是双向连接呢？
 - [The GNU Awk User's Guide](https://www.gnu.org/software/gawk/manual/gawk.html)
 
 本文将会持续修正和更新，最新内容请参考我的 [GITHUB](https://github.com/mylxsw) 上的 [程序猿成长计划](https://github.com/mylxsw/growing-up) 项目，欢迎 Star。
+
+
