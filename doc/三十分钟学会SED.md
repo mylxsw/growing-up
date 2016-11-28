@@ -4,6 +4,8 @@
 
 ![](https://oayrssjpa.qnssl.com/2016-11-27-14802608583950.jpg)
 
+[TOC]
+
 ## 概述
 
 SED的英文全称是 **Stream EDitor**，它是一个简单而强大的文本解析转换工具，在1973-1974年期间由贝尔实验室的*Lee E. McMahon*开发，今天，它已经运行在所有的主流操作系统上了。
@@ -380,7 +382,7 @@ SED还提供了另外两种操作符用于指定地址范围，第一个是加�
 
 本章将会讲解一些常用的SED命令，主要包括`DELETE`，`WRITE`，`APPEND`，`CHANGE`，`INSERT`，`TRANSLATE`，`QUIT`，`READ`，`EXECUTE`等命令。
 
-### 删除命令 `DELETE`
+### `Delete`命令 
 
 删除命令格式如下
 
@@ -424,7 +426,7 @@ SED的地址范围并不仅仅限于数字，我们也可以指定模式匹配�
     5) The Pilgrimage, Paulo Coelho, 288 
     6) A Game of Thrones, George R. R. Martin, 864 
 
-### 写命令 `Write`
+### `Write`命令 
 
 SED提供了 **write** 命令用于将模式缓冲区中的内容写入到文件，与 **delete** 命令类似，下面是 **write** 命令的语法
 
@@ -470,19 +472,16 @@ SED提供了 **write** 命令用于将模式缓冲区中的内容写入到文件
     4) The Fellowship of the Ring, J. R. R. Tolkien, 432
 
 
-### 追加命令 `append`
+### `Append`命令 
 
-对于任何文本编辑器来说，追加内容是最常用的操作之一，SED使用append命令提供了对该操作的支持，下面是append操作的语法
+文本追加命令语法：
 
     [address]a\ 
     Append text 
 
-我们在第四行之后追加一本新书，下面的命令展示了如何操作
+在第四行之后追加一本新书：
 
-    [jerry]$ sed '4 a 7) Adultry, Paulo Coelho, 234' books.txt 
-
-执行上述命令之后，将会得到下列输出
-
+    $ sed '4 a 7) Adultry, Paulo Coelho, 234' books.txt 
     1) A Storm of Swords, George R. R. Martin, 1216 
     2) The Two Towers, J. R. R. Tolkien, 352 
     3) The Alchemist, Paulo Coelho, 197 
@@ -493,12 +492,9 @@ SED提供了 **write** 命令用于将模式缓冲区中的内容写入到文件
 
 在命令部分，4指的是行号，`a` 是append命令，剩余部分为要追加的文本。
 
-让我们在文件的结尾插入一行文本，使用 **$** 作为地址，下面的例子描述了该实现
+在文件的结尾插入一行文本，使用 **$** 作为地址
 
-    [jerry]$ sed '$ a 7) Adultry, Paulo Coelho, 234' books.txt
-
-在执行上述命令之后，你将会得到下列输出
-
+    $ sed '$ a 7) Adultry, Paulo Coelho, 234' books.txt
     1) A Storm of Swords, George R. R. Martin, 1216 
     2) The Two Towers, J. R. R. Tolkien, 352 
     3) The Alchemist, Paulo Coelho, 197 
@@ -507,9 +503,9 @@ SED提供了 **write** 命令用于将模式缓冲区中的内容写入到文件
     6) A Game of Thrones, George R. R. Martin, 864 
     7) Adultry, Paulo Coelho, 234 
     
-除了行号，我们也可以使用文本模式指定地址，例如，下面的例子中在匹配 `The Alchemist` 的行之后追加文本
+除了行号，我们也可以使用文本模式指定地址，例如，在匹配 `The Alchemist` 的行之后追加文本
 
-    [jerry]$ sed '/The Alchemist/ a 7) Adultry, Paulo Coelho, 234' books.txt  
+    $ sed '/The Alchemist/ a 7) Adultry, Paulo Coelho, 234' books.txt  
     1) A Storm of Swords, George R. R. Martin, 1216 
     2) The Two Towers, J. R. R. Tolkien, 352 
     3) The Alchemist, Paulo Coelho, 197 
@@ -518,36 +514,16 @@ SED提供了 **write** 命令用于将模式缓冲区中的内容写入到文件
     5) The Pilgrimage, Paulo Coelho, 288 
     6) A Game of Thrones, George R. R. Martin, 864 
 
-注意，如果有多个匹配的模式的话，文本将会按照匹配的顺序依次追加，下列的例子描述了这种场景
+### `Change`命令 
 
-    [jerry]$ sed '/The/ a 7) Adultry, Paulo Coelho, 234' books.txt 
-
-执行上述代码之后，将会得到下列输出
-
-    1) A Storm of Swords, George R. R. Martin, 1216 
-    2) The Two Towers, J. R. R. Tolkien, 352 
-    7) Adultry, Paulo Coelho, 234 
-    3) The Alchemist, Paulo Coelho, 197 
-    7) Adultry, Paulo Coelho, 234 
-    4) The Fellowship of the Ring, J. R. R. Tolkien, 432 
-    7) Adultry, Paulo Coelho, 234 
-    5) The Pilgrimage, Paulo Coelho, 288 
-    7) Adultry, Paulo Coelho, 234 
-    6) A Game of Thrones, George R. R. Martin, 864 
-
-### 修改命令 `Change`
-
-SED通过 **c** 提供了 **change** 和 **replace** 命令，改命令帮助我们使用新文本替换已经存在的行，当提供行的范围时，所有的行都被作为一组被替换为单行文本，下面是改命令的语法
+SED通过 **c** 提供了 **change** 和 **replace** 命令，该命令帮助我们使用新文本替换已经存在的行，当提供行的地址范围时，所有的行都被作为一组被替换为单行文本，下面是该命令的语法
 
     [address1[,address2]]c\ 
     Replace text
 
-让我们使用一些其他文本替换第三行
+比如，替换文本中的第三行为新的内容
 
-    [jerry]$ sed '3 c 3) Adultry, Paulo Coelho, 324' books.txt
-
-在执行该命令之后，将会得到如下输出
-
+    $ sed '3 c 3) Adultry, Paulo Coelho, 324' books.txt
     1) A Storm of Swords, George R. R. Martin, 1216 
     2) The Two Towers, J. R. R. Tolkien, 352 
     3) Adultry, Paulo Coelho, 324 
@@ -557,7 +533,7 @@ SED通过 **c** 提供了 **change** 和 **replace** 命令，改命令帮助我
 
 SED也接受模式作为地址
 
-    [jerry]$ sed '/The Alchemist/ c 3) Adultry, Paulo Coelho, 324' books.txt
+    $ sed '/The Alchemist/ c 3) Adultry, Paulo Coelho, 324' books.txt
     1) A Storm of Swords, George R. R. Martin, 1216 
     2) The Two Towers, J. R. R. Tolkien, 352 
     3) Adultry, Paulo Coelho, 324 
@@ -565,24 +541,139 @@ SED也接受模式作为地址
     5) The Pilgrimage, Paulo Coelho, 288 
     6) A Game of Thrones, George R. R. Martin, 864 
 
-使用单行替换多行文本
+多行替换也是支持的，下面的命令实现了将第4-6行内容替换为单行
 
-    [jerry]$ sed '4, 6 c 4) Adultry, Paulo Coelho, 324' books.txt  
+    $ sed '4, 6 c 4) Adultry, Paulo Coelho, 324' books.txt  
     1) A Storm of Swords, George R. R. Martin, 1216 
     2) The Two Towers, J. R. R. Tolkien, 352 
     3) The Alchemist, Paulo Coelho, 197 
     4) Adultry, Paulo Coelho, 324
 
-### 插入命令 `insert`
+### `Insert`命令 
+
+插入命令与追加命令类似，唯一的区别是插入命令是在匹配的位置前插入新的一行。
+
+    [address]i\ 
+    Insert text 
+
+下面的命令会在第四行前插入新的一行
+
+    $ sed '4 i 7) Adultry, Paulo Coelho, 324' books.txt 
+    1) A Storm of Swords, George R. R. Martin, 1216 
+    2) The Two Towers, J. R. R. Tolkien, 352 
+    3) The Alchemist, Paulo Coelho, 197 
+    7) Adultry, Paulo Coelho, 324 
+    4) The Fellowship of the Ring, J. R. R. Tolkien, 432 
+    5) The Pilgrimage, Paulo Coelho, 288 
+    6) A Game of Thrones, George R. R. Martin, 864
+
+### `Translate`命令 
+
+转换命令的语法
+
+    [address1[,address2]]y/list-1/list-2/
+
+该命令用于将*list-1*中的内容转换为*list-2*中的内容，这种转换是基于位置的，因此*list-1*和*list-2*中的内容必须是一一对应的，他们的大小必须相同，而且不支持正则表达式。
+
+    $ echo "1 5 15 20" | sed 'y/151520/IVXVXX/'
+    I V IV XX
+
+### `l`命令
+
+你能通过直接观察区分出单词是通过空格还是tab进行分隔的吗？显然是不能的，但是SED可以为你做到这点。使用`l`命令（英文字母L的小写）可以显示文本中的隐藏字符（例如`\t`或者`$`字符）。
+
+    [address1[,address2]]l 
+    [address1[,address2]]l [len] 
+
+为了测试该命令，我们首先将books.txt中的空格替换为tab。
+
+    $ sed 's/ /\t/g' books.txt > junk.txt 
+
+接下来执行`l`命令
+
+    $ sed -n 'l' junk.txt
+    1)\tStorm\tof\tSwords,\tGeorge\tR.\tR.\tMartin,\t1216\t$
+    2)\tThe\tTwo\tTowers,\tJ.\tR.\tR.\tTolkien,\t352\t$
+    3)\tThe\tAlchemist,\tPaulo\tCoelho,\t197\t$
+    4)\tThe\tFellowship\tof\tthe\tRing,\tJ.\tR.\tR.\tTolkien,\t432\t$
+    5)\tThe\tPilgrimage,\tPaulo\tCoelho,\t288\t$
+    6)\tA\tGame\tof\tThrones,\tGeorge\tR.\tR.\tMartin,\t864$
+    
+使用`l`命令的时候，一个很有趣的特性是我们可以使用它来实现文本按照指定的宽度换行。
+
+    $ sed -n 'l 25' books.txt
+    1) Storm of Swords, Geor\
+    ge R. R. Martin, 1216 $
+    2) The Two Towers, J. R.\
+     R. Tolkien, 352 $
+    3) The Alchemist, Paulo \
+    Coelho, 197 $
+    4) The Fellowship of the\
+     Ring, J. R. R. Tolkien,\
+     432 $
+    5) The Pilgrimage, Paulo\
+     Coelho, 288 $
+    6) A Game of Thrones, Ge\
+    orge R. R. Martin, 864$
+
+上面的示例中在`l`命令后跟了一个数字25，它告诉SED按照每行25个字符进行换行，如果指定这个数字为0的话，则只有在存在换行符的情况下才进行换行。
+
+> `l`命令是GNU-SED的一部分，其它的一些变体中可能无法使用该命令。
+
+### `Quit`命令
+
+在SED中，可以使用`Quit`命令退出当前的执行流
+
+    [address]q 
+    [address]q [value]
+
+需要注意的是，`q`命令不支持地址范围，只支持单个地址匹配。默认情况下SED会按照读取、执行、重复的工作流执行，但当它遇到`q`命令的时候，它会退出当前的执行流。
+
+    $ sed '3 q' books.txt
+    1) A Storm of Swords, George R. R. Martin, 1216 
+    2) The Two Towers, J. R. R. Tolkien, 352 
+    3) The Alchemist, Paulo Coelho, 197
+
+    $ sed '/The Alchemist/ q' books.txt 
+    1) A Storm of Swords, George R. R. Martin, 1216 
+    2) The Two Towers, J. R. R. Tolkien, 352 
+    3) The Alchemist, Paulo Coelho, 197
+
+`q`命令也支持提供一个value，这个value将作为程序的返回代码返回
+
+    $ sed '/The Alchemist/ q 100' books.txt
+    1) A Storm of Swords, George R. R. Martin, 1216
+    2) The Two Towers, J. R. R. Tolkien, 352 
+    3) The Alchemist, Paulo Coelho, 197
+    
+    $ echo $? 
+    100
+
+### `Read`命令
 
 
 
+### `Execute`命令
 
+### 其它命令
 
+## 特殊字符
 
+### `=`命令
 
----
-原文： [Sed Tutorial](http://www.tutorialspoint.com/sed/index.htm)
+### `&`命令
+
+## 字符串
+
+## 管理模式
+
+## 正则表达式
+
+## 常用代码段
+
+## 参考
+
+-  [Sed Tutorial](http://www.tutorialspoint.com/sed/index.htm)
 
 
 
