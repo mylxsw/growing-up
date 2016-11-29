@@ -651,17 +651,220 @@ SED也接受模式作为地址
 
 ### `Read`命令
 
+在SED中，我们可以让SED使用Read命令从外部文件中读取内容并且在满足条件的时候显示出来。
 
+    [address]r file
+
+需要注意的是，`r`命令和文件名之间必须只有一个空格。
+
+下面的示例会打开*junk.txt*文件，将其内容插入到*books.txt*文件的第三行之后
+
+    $ echo "This is junk text." > junk.txt 
+    $ sed '3 r junk.txt' books.txt 
+    1) A Storm of Swords, George R. R. Martin, 1216 
+    2) The Two Towers, J. R. R. Tolkien, 352 
+    3) The Alchemist, Paulo Coelho, 197 
+    This is junk text. 
+    4) The Fellowship of the Ring, J. R. R. Tolkien, 432 
+    5) The Pilgrimage, Paulo Coelho, 288 
+    6) A Game of Thrones, George R. R. Martin, 864
+
+> `r`命令也支持地址范围，例如*3, 5 r junk.txt*会在第三行，第四行，第五行后面分别插入*junk.txt*的内容
 
 ### `Execute`命令
 
+如果你看过[三十分钟学会AWK][]一文，你可能已经知道了在AWK中可以执行外部的命令，那么在SED中呢，是否我们也可以这么做呢？
+
+答案是肯定的，在SED中，我们可以使用`e`命令执行外部命令
+
+    [address1[,address2]]e [command]
+
+下面的命令会在第三行之前执行*date*命令
+
+    $ sed '3 e date' books.txt
+    1) Storm of Swords, George R. R. Martin, 1216
+    2) The Two Towers, J. R. R. Tolkien, 352
+    2016年11月29日 星期二 22时46分14秒 CST
+    3) The Alchemist, Paulo Coelho, 197
+    4) The Fellowship of the Ring, J. R. R. Tolkien, 432
+    5) The Pilgrimage, Paulo Coelho, 288
+    6) A Game of Thrones, George R. R. Martin, 864
+
+另一个示例
+
+    $ sed '3,5 e who' books.txt
+    1) Storm of Swords, George R. R. Martin, 1216
+    2) The Two Towers, J. R. R. Tolkien, 352
+    mylxsw   console  Nov 29 19:30
+    mylxsw   ttys000  Nov 29 22:45
+    3) The Alchemist, Paulo Coelho, 197
+    mylxsw   console  Nov 29 19:30
+    mylxsw   ttys000  Nov 29 22:45
+    4) The Fellowship of the Ring, J. R. R. Tolkien, 432
+    mylxsw   console  Nov 29 19:30
+    mylxsw   ttys000  Nov 29 22:45
+    5) The Pilgrimage, Paulo Coelho, 288
+    6) A Game of Thrones, George R. R. Martin, 864
+
+如果你仔细观察`e`命令的语法，你会发现其实它的*command*参数是可选的。在没有提供外部命令的时候，SED会将模式缓冲区中的内容作为要执行的命令。
+
+    $ echo -e "date\ncal\nuname" > commands.txt
+    $ cat commands.txt
+    date
+    cal
+    uname
+    $ sed 'e' commands.txt
+    2016年11月29日 星期二 22时50分30秒 CST
+        十一月 2016
+    日 一 二 三 四 五 六
+           1  2  3  4  5
+     6  7  8  9 10 11 12
+    13 14 15 16 17 18 19
+    20 21 22 23 24 25 26
+    27 28 29 30
+    
+    Darwin
+
 ### 其它命令
+
+#### N
+
+默认情况下，SED是基于单行进行操作的，有些情况下我们可能需要使用多行进行编辑，启用多行编辑使用`N`命令，与`n`不同的是，`N`并不会清除、输出模式缓冲区的内容，而是采用了追加模式。
+
+    [address1[,address2]]N
+
+下面的示例将会把*books2.txt*中的标题和作者放到同一行展示，并且使用逗号进行分隔
+
+    $ sed 'N; s/\n/,/g' books2.txt
+    A Storm of Swords ,George R. R. Martin
+    The Two Towers ,J. R. R. Tolkien
+    The Alchemist ,Paulo Coelho
+    The Fellowship of the Ring ,J. R. R. Tolkien
+    The Pilgrimage ,Paulo Coelho
+    A Game of Thrones ,George R. R. Martin
+
+#### P
+
+`P`命令用于输出`N`命令创建的多行文本的模式缓冲区中的第一行。
+
+    [address1[,address2]]P 
+
+例如下面的命令只输出了图书的标题
+
+    $ sed -n 'N;P' books2.txt
+    A Storm of Swords
+    The Two Towers
+    The Alchemist
+    The Fellowship of the Ring
+    The Pilgrimage
+    A Game of Thrones
+
+#### v
+
+`v`命令用于检查SED的版本，如果版本大于参数中的版本则正常执行，否则失败
+
+    [address1[,address2]]v [version]
+
+例如
+
+    $ sed --version
+    sed (GNU sed) 4.2.2
+
+    $ sed 'v 4.2.3' books.txt
+    sed: -e expression #1, char 7: expected newer version of sed
+    
+    $ sed 'v 4.2.2' books.txt
+    1) Storm of Swords, George R. R. Martin, 1216
+    2) The Two Towers, J. R. R. Tolkien, 352
+    3) The Alchemist, Paulo Coelho, 197
+    4) The Fellowship of the Ring, J. R. R. Tolkien, 432
+    5) The Pilgrimage, Paulo Coelho, 288
+    6) A Game of Thrones, George R. R. Martin, 864
 
 ## 特殊字符
 
+在SED中提供了两个可以用作命令的特殊字符：**=** 和 **&** 。
+
 ### `=`命令
 
+`=`命令用于输出行号，语法格式为
+
+    [/pattern/]= 
+    [address1[,address2]]=
+
+例如为每一行输出行号
+
+    $ sed '=' books2.txt
+    1
+    A Storm of Swords
+    2
+    George R. R. Martin
+    ...
+    
+只为1-4行输出行号
+    
+    $ sed '1, 4=' books2.txt
+    1
+    A Storm of Swords
+    2
+    George R. R. Martin
+    3
+    The Two Towers
+    4
+    J. R. R. Tolkien
+    The Alchemist
+    Paulo Coelho
+    The Fellowship of the Ring
+    J. R. R. Tolkien
+    The Pilgrimage
+    Paulo Coelho
+    A Game of Thrones
+    George R. R. Martin
+
+匹配Paulo的行输出行号
+
+    $ sed '/Paulo/ =' books2.txt
+    A Storm of Swords
+    George R. R. Martin
+    The Two Towers
+    J. R. R. Tolkien
+    The Alchemist
+    6
+    Paulo Coelho
+    The Fellowship of the Ring
+    J. R. R. Tolkien
+    The Pilgrimage
+    10
+    Paulo Coelho
+    A Game of Thrones
+    George R. R. Martin
+
+最后一行输出行号，这个命令比较有意思了，可以用于输出文件总共有多少行
+    
+    $ sed -n '$ =' books2.txt
+    12
+
 ### `&`命令
+
+特殊字符`&`用于存储匹配模式的内容，通常与替换命令`s`一起使用。
+
+    $ sed 's/[[:digit:]]/Book number &/' books.txt
+    Book number 1) Storm of Swords, George R. R. Martin, 1216
+    Book number 2) The Two Towers, J. R. R. Tolkien, 352
+    Book number 3) The Alchemist, Paulo Coelho, 197
+    Book number 4) The Fellowship of the Ring, J. R. R. Tolkien, 432
+    Book number 5) The Pilgrimage, Paulo Coelho, 288
+    Book number 6) A Game of Thrones, George R. R. Martin, 864
+
+上述命令用于匹配每一行第一个数字，在其前面添加 *Book number* 。而下面这个命令则匹配最后一个数字，并修改为`Pages =`。其中`[[:digit:]]* *$`可能比较费解，这一部分其实是：*匹配0个或多个数字+0个或多个空格+行尾*。
+
+    sed 's/[[:digit:]]* *$/Pages = &/' books.txt
+    1) Storm of Swords, George R. R. Martin, Pages = 1216
+    2) The Two Towers, J. R. R. Tolkien, Pages = 352
+    3) The Alchemist, Paulo Coelho, Pages = 197
+    4) The Fellowship of the Ring, J. R. R. Tolkien, Pages = 432
+    5) The Pilgrimage, Paulo Coelho, Pages = 288
+    6) A Game of Thrones, George R. R. Martin, Pages = 864
 
 ## 字符串
 
@@ -675,5 +878,7 @@ SED也接受模式作为地址
 
 -  [Sed Tutorial](http://www.tutorialspoint.com/sed/index.htm)
 
+
+[三十分钟学会AWK]:https://aicode.cc/san-shi-fen-zhong-xue-huiawk.html
 
 
