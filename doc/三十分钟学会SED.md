@@ -868,11 +868,173 @@ SED也接受模式作为地址
 
 ## 字符串
 
+### 替换命令 **s**
+
+文本替换命令非常常见，其格式如下
+
+    [address1[,address2]]s/pattern/replacement/[flags]
+
+在前面我们使用的*books.txt*文件中，我们使用逗号“*,*”分隔每一列，下面的示例中，我们会使用替换命令将其替换为管道符“*|*”：
+
+    $ sed 's/,/ |/' books.txt
+    1) Storm of Swords | George R. R. Martin, 1216
+    2) The Two Towers | J. R. R. Tolkien, 352
+    3) The Alchemist | Paulo Coelho, 197
+    4) The Fellowship of the Ring | J. R. R. Tolkien, 432
+    5) The Pilgrimage | Paulo Coelho, 288
+    6) A Game of Thrones | George R. R. Martin, 864
+
+是不是觉得哪里不对？相信你已经发现，每一行的第二个逗号都没有被替换，只有第一个被替换了，确实如此，在SED中，使用替换命令的时候默认只会对第一个匹配的位置进行替换。使用`g`选项告诉SED对所有内容进行替换：
+
+    $ sed 's/,/ | /g' books.txt
+    1) Storm of Swords |  George R. R. Martin |  1216
+    2) The Two Towers |  J. R. R. Tolkien |  352
+    3) The Alchemist |  Paulo Coelho |  197
+    4) The Fellowship of the Ring |  J. R. R. Tolkien |  432
+    5) The Pilgrimage |  Paulo Coelho |  288
+    6) A Game of Thrones |  George R. R. Martin |  864
+
+> 如果对匹配模式（或地址范围）的行进行替换，则只需要在`s`命令前添加地址即可。比如只替换匹配*The Pilgrimage*的行：` sed '/The Pilgrimage/ s/,/ | /g' books.txt`
+
+还有一些其它的选项，这里就简单的描述一下，不在展开讲解
+
+- **数字n**: 只替换第n次匹配，比如`sed 's/,/ | /2' books.txt`，只替换每行中第二个逗号
+- **p**：只输出改变的行，比如`sed -n 's/Paulo Coelho/PAULO COELHO/p' books.txt`
+- **w**：存储改变的行到文件，比如`sed -n 's/Paulo Coelho/PAULO COELHO/w junk.txt' books.txt`
+- **i**：匹配时忽略大小写，比如`sed  -n 's/pAuLo CoElHo/PAULO COELHO/pi' books.txt`
+
+在执行替换操作的时候，如果要替换的内容中包含`/`，这个时候怎么办呢？很简单，添加转义操作符。
+
+    $ echo "/bin/sed" | sed 's/\/bin\/sed/\/home\/mylxsw\/src\/sed\/sed-4.2.2\/sed/'
+    /home/mylxsw/src/sed/sed-4.2.2/sed
+
+上面的命令中，我们使用`\`对`/`进行了转义，不过表达式已经看起来非常难看了，在SED中还可以使用`|`，`@`，`^`，`!`作为命令的分隔符，所以，下面的几个命令和上面的是等价的
+
+    echo "/bin/sed" | sed 's|/bin/sed|/mylxsw/mylxsw/src/sed/sed-4.2.2/sed|'
+    echo "/bin/sed" | sed 's@/bin/sed@/home/mylxsw/src/sed/sed-4.2.2/sed@'
+    echo "/bin/sed" | sed 's^/bin/sed^/home/mylxsw/src/sed/sed-4.2.2/sed^'
+    echo "/bin/sed" | sed 's!/bin/sed!/home/mylxsw/src/sed/sed-4.2.2/sed!'
+
+### 匹配子字符串
+
+前面我们学习了替换命令的用法，现在让我们看看如何获取匹配文本中的某个子串。
+
+在SED中，使用`\(`和`\)`对匹配的内容进行分组，使用`\N`的方式进行引用。请看下面示例
+
+    $ echo "Three One Two" | sed 's|\(\w\+\) \(\w\+\) \(\w\+\)|\2 \3 \1|'
+    One Two Three
+
+我们输出了*Three*，*One*，*Two*三个单词，在SED的替换规则中，使用空格分隔了三小段正则表达式`\(\w\+\)`来匹配每一个单词，后面使用`\1`，，`\2`，`\3`分别引用它们的值。
+
 ## 管理模式
+
+
 
 ## 正则表达式
 
+这一部分就是标准正则表达式的一些特殊字符以元字符，比较熟悉的请略过。
+
+### 标准正则表达式
+
+#### **^** 
+
+匹配行的开始。
+
+    $ sed -n '/^The/ p' books2.txt
+    The Two Towers, J. R. R. Tolkien 
+    The Alchemist, Paulo Coelho 
+    The Fellowship of the Ring, J. R. R. Tolkien 
+    The Pilgrimage, Paulo Coelho
+
+#### **$**
+
+匹配行的结尾
+
+    $ sed -n '/Coelho$/ p' books2.txt 
+    The Alchemist, Paulo Coelho 
+    The Pilgrimage, Paulo Coelho
+
+#### **.**
+
+匹配单个字符（除行尾）
+
+    $ echo -e "cat\nbat\nrat\nmat\nbatting\nrats\nmats" | sed -n '/^..t$/p'
+    cat
+    bat
+    rat
+    mat
+
+#### **[]**
+
+匹配字符集
+
+    $ echo -e "Call\nTall\nBall" | sed -n '/[CT]all/ p'
+    Call
+    Tall
+
+#### **[\^]**
+
+排除字符集
+
+    $ echo -e "Call\nTall\nBall" | sed -n '/[^CT]all/ p'
+    Ball
+    
+#### **[-]**
+
+字符范围。
+
+    $ echo -e "Call\nTall\nBall" | sed -n '/[C-Z]all/ p' 
+    Call 
+    Tall
+    
+#### **\?** ，**\\+** ，\*
+
+分别对应0次到1次，一次到多次，0次到多次匹配。
+
+#### **{n}** ，**{n,}** ，**{m, n}**
+
+精确匹配N次，至少匹配N次，匹配M-N次
+
+#### **|**
+
+或操作。
+
+    $ echo -e "str1\nstr2\nstr3\nstr4" | sed -n '/str\(1\|3\)/ p' 
+    str1
+    str3
+
+### POSIX兼容的正则
+
+主要包含`[:alnum:]`，`[:alpha:]`，`[:blank:]`，`[:digit:]`，`[:lower:]`，`[:upper:]`，`[:punct:]`，`[:space:]`，这些基本都见名之意，不在赘述。
+
+### 元字符
+
+#### **\s**
+
+匹配单个空白内容
+
+    $ echo -e "Line\t1\nLine2" | sed -n '/Line\s/ p'
+    Line 1 
+
+#### **\S**
+
+匹配单个非空白内容。
+
+#### **\w** ， **\W**
+
+单个单词、非单词。
+
 ## 常用代码段
+
+### Cat命令
+
+### 移除空行
+
+### 从C++程序中移除注释
+
+### 为某些行添加注释
+
+### 实现**Wc -l**命令
 
 ## 参考
 
