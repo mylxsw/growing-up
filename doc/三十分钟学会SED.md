@@ -1,8 +1,12 @@
 # 三十分钟学会SED
 
-本文还 未完成，敬请期待...
-
 ![](https://oayrssjpa.qnssl.com/2016-11-27-14802608583950.jpg)
+
+本文承接之前写的[三十分钟学会AWK][]一文，在学习完AWK之后，趁热打铁又学习了一下SED，不得不说这两个工具真的堪称文本处理神器，谁用谁知道！本文大部分内容依旧是翻译自Tutorialspoint上的入门教程，这次是 [Sed Tutorial](http://www.tutorialspoint.com/sed/index.htm) 一文，内容做了一些删减和补充，对原文中一些Demo也亲自测试了一番，希望本文对大家学习和了解Sed有所帮助。
+
+<!-- more -->
+
+本文将会持续修正和更新，最新内容请参考我的 [GITHUB](https://github.com/mylxsw) 上的 [程序猿成长计划](https://github.com/mylxsw/growing-up) 项目，欢迎 Star。
 
 [TOC]
 
@@ -382,7 +386,7 @@ SED还提供了另外两种操作符用于指定地址范围，第一个是加�
 
 本章将会讲解一些常用的SED命令，主要包括`DELETE`，`WRITE`，`APPEND`，`CHANGE`，`INSERT`，`TRANSLATE`，`QUIT`，`READ`，`EXECUTE`等命令。
 
-### `Delete`命令 
+### `Delete`命令  **d**
 
 删除命令格式如下
 
@@ -426,7 +430,7 @@ SED的地址范围并不仅仅限于数字，我们也可以指定模式匹配�
     5) The Pilgrimage, Paulo Coelho, 288 
     6) A Game of Thrones, George R. R. Martin, 864 
 
-### `Write`命令 
+### `Write`命令 **w**
 
 SED提供了 **write** 命令用于将模式缓冲区中的内容写入到文件，与 **delete** 命令类似，下面是 **write** 命令的语法
 
@@ -472,7 +476,7 @@ SED提供了 **write** 命令用于将模式缓冲区中的内容写入到文件
     4) The Fellowship of the Ring, J. R. R. Tolkien, 432
 
 
-### `Append`命令 
+### `Append`命令 **a**
 
 文本追加命令语法：
 
@@ -514,7 +518,7 @@ SED提供了 **write** 命令用于将模式缓冲区中的内容写入到文件
     5) The Pilgrimage, Paulo Coelho, 288 
     6) A Game of Thrones, George R. R. Martin, 864 
 
-### `Change`命令 
+### `Change`命令 **c**
 
 SED通过 **c** 提供了 **change** 和 **replace** 命令，该命令帮助我们使用新文本替换已经存在的行，当提供行的地址范围时，所有的行都被作为一组被替换为单行文本，下面是该命令的语法
 
@@ -549,7 +553,7 @@ SED也接受模式作为地址
     3) The Alchemist, Paulo Coelho, 197 
     4) Adultry, Paulo Coelho, 324
 
-### `Insert`命令 
+### `Insert`命令 **i**
 
 插入命令与追加命令类似，唯一的区别是插入命令是在匹配的位置前插入新的一行。
 
@@ -567,7 +571,7 @@ SED也接受模式作为地址
     5) The Pilgrimage, Paulo Coelho, 288 
     6) A Game of Thrones, George R. R. Martin, 864
 
-### `Translate`命令 
+### `Translate`命令 **y**
 
 转换命令的语法
 
@@ -578,7 +582,7 @@ SED也接受模式作为地址
     $ echo "1 5 15 20" | sed 'y/151520/IVXVXX/'
     I V IV XX
 
-### `l`命令
+### `l`命令 **l**
 
 你能通过直接观察区分出单词是通过空格还是tab进行分隔的吗？显然是不能的，但是SED可以为你做到这点。使用`l`命令（英文字母L的小写）可以显示文本中的隐藏字符（例如`\t`或者`$`字符）。
 
@@ -620,7 +624,7 @@ SED也接受模式作为地址
 
 > `l`命令是GNU-SED的一部分，其它的一些变体中可能无法使用该命令。
 
-### `Quit`命令
+### `Quit`命令 **q**
 
 在SED中，可以使用`Quit`命令退出当前的执行流
 
@@ -649,7 +653,7 @@ SED也接受模式作为地址
     $ echo $? 
     100
 
-### `Read`命令
+### `Read`命令 **r**
 
 在SED中，我们可以让SED使用Read命令从外部文件中读取内容并且在满足条件的时候显示出来。
 
@@ -671,7 +675,7 @@ SED也接受模式作为地址
 
 > `r`命令也支持地址范围，例如*3, 5 r junk.txt*会在第三行，第四行，第五行后面分别插入*junk.txt*的内容
 
-### `Execute`命令
+### `Execute`命令 **e**
 
 如果你看过[三十分钟学会AWK][]一文，你可能已经知道了在AWK中可以执行外部的命令，那么在SED中呢，是否我们也可以这么做呢？
 
@@ -928,7 +932,9 @@ SED也接受模式作为地址
 
 ## 管理模式
 
+前面已经讲解过模式缓冲区和**hold buffer**的用法，在本节中我们将会继续探索它们的用法。
 
+> 本部分内容暂未更新，请关注[程序猿成长计划](https://github.com/mylxsw/growing-up) 项目，我将最先在Github的这个仓库中更新最新内容。
 
 ## 正则表达式
 
@@ -1026,15 +1032,267 @@ SED也接受模式作为地址
 
 ## 常用代码段
 
-### Cat命令
+### Cat命令 
+
+模拟`cat`命令比较简单，有下面两种方式
+
+    $ sed '' books.txt
+    1) Storm of Swords, George R. R. Martin, 1216
+    2) The Two Towers, J. R. R. Tolkien, 352
+    3) The Alchemist, Paulo Coelho, 197
+    4) The Fellowship of the Ring, J. R. R. Tolkien, 432
+    5) The Pilgrimage, Paulo Coelho, 288
+    6) A Game of Thrones, George R. R. Martin, 864
+    
+    $ sed -n 'p' books.txt
+    1) Storm of Swords, George R. R. Martin, 1216
+    2) The Two Towers, J. R. R. Tolkien, 352
+    3) The Alchemist, Paulo Coelho, 197
+    4) The Fellowship of the Ring, J. R. R. Tolkien, 432
+    5) The Pilgrimage, Paulo Coelho, 288
+    6) A Game of Thrones, George R. R. Martin, 864
 
 ### 移除空行
 
+    $ echo -e "Line #1\n\n\nLine #2" | sed '/^$/d'
+    Line #1
+    Line #2
+
 ### 从C++程序中移除注释
 
+有下面这样一个cpp文件
+
+    $ cat hello.cpp
+    #include <iostream> 
+    using namespace std; 
+    int main(void) 
+    { 
+       // Displays message on stdout. 
+       cout >> "Hello, World !!!" >> endl;  
+       return 0; // Return success. 
+    }
+
+执行下面的命令可以移除注释
+
+    $ sed 's|//.*||g' hello.cpp
+    #include <iostream>
+    using namespace std;
+    int main(void)
+    {
+    
+       cout >> "Hello, World !!!" >> endl;
+       return 0;
+     }
+     
 ### 为某些行添加注释
 
+    $ sed '3,5 s/^/#/' hello.sh 
+    #!/bin/bash 
+    #pwd 
+    #hostname 
+    #uname -a 
+    who 
+    who -r 
+    lsb_release -a
+
 ### 实现**Wc -l**命令
+
+`wc -l`命令用于统计文件中的行数，使用SED也可以模拟该命令
+
+    $ wc -l hello.cpp
+           9 hello.cpp
+    $ sed -n '$ =' hello.cpp
+    9
+
+### 模拟实现`head`命令
+
+`head`命令用于输出文件中的前10行内容。
+
+    $ head books2.txt
+    A Storm of Swords
+    George R. R. Martin
+    The Two Towers
+    J. R. R. Tolkien
+    The Alchemist
+    Paulo Coelho
+    The Fellowship of the Ring
+    J. R. R. Tolkien
+    The Pilgrimage
+    Paulo Coelho
+    
+使用SED中的`sed '10 q'`可以模拟它的实现
+
+    $ sed '10 q' books.txt 
+    A Storm of Swords 
+    George R. R. Martin 
+    The Two Towers 
+    J. R. R. Tolkien 
+    The Alchemist 
+    Paulo Coelho 
+    The Fellowship of the Ring 
+    J. R. R. Tolkien 
+    The Pilgrimage
+    Paulo Coelho
+
+### 模拟`tail -1`命令
+
+`tail -1`输出文件的最后一行。
+
+    $ cat test.txt
+    Line #1 
+    Line #2 
+    
+    $ tail -1 test.txt
+    Line #2
+    $ sed $ sed -n '$p' test.txt
+    Line #2
+
+### 模拟`Dos2unix`命令
+
+在DOS环境中，换行符是使用**CR/LF**两个字符一起表示的，下面命令模拟了`dos2unix`命令转换这些换行符为UNIX换行符。
+
+> 在GNU/Linux环境中，**CR/LF**通常使用"\^M"（不是简单的两个符号组合，请使用快捷键Ctrl+v,Ctrl+m输入）进行表示。
+
+    $ echo -e "Line #1\r\nLine #2\r" > test.txt
+    $ file test.txt
+    test.txt: ASCII text, with CRLF line terminators
+    $ sed 's/^M$//' test.txt > new.txt
+    $ file new.txt
+    new.txt: ASCII text
+    $ cat -vte new.txt
+    Line #1$
+    Line #2$
+
+### 模拟`Unix2dos`命令
+
+    $ file new.txt
+    new.txt: ASCII text
+    $ sed 's/$/\r/' new.txt > new2.txt
+    $ file new2.txt
+    new2.txt: ASCII text, with CRLF line terminators
+    
+    $ cat -vte new2.txt
+    Line #1^M$
+    Line #2^M$
+
+### 模拟`cat -E`命令
+
+`cat -E`命令会在每一行的行尾输出一个*$*符号。
+
+    $ echo -e "Line #1\nLine #2" | cat -E
+    Line #1$
+    Line #2$
+    $ echo -e "Line #1\nLine #2" | sed 's|$|&$|'
+    Line #1$
+    Line #2$
+
+> 注意，在Mac下不支持`cat -E`，可以直接使用sed代替
+
+### 模拟`cat -ET`命令
+
+`cat -ET`命令不仅对每一行的行尾添加*$*，还会将每一行中的TAB显示为*^I*。
+
+    $ echo -e "Line #1\tLine #2" | cat -ET
+    Line #1^ILine #2$
+    $ echo -e "Line #1\tLine #2" | sed -n 'l' | sed 'y/\\t/^I/'
+    Line #1^ILine #2$
+
+### 模拟`nl`命令
+
+命令`nl`可以为输入内容的每一行添加行号，记得之前介绍的`=`操作符吧，在SED中我们可以用它来实现与`nl`命令类似的功能。
+
+    $ echo -e "Line #1\nLine #2" |nl
+         1	Line #1
+         2	Line #2
+    $ echo -e "Line #1\nLine #2" | sed = |  sed 'N;s/\n/\t/'
+    1	Line #1
+    2	Line #2
+
+上面的SED命令使用了两次，第一次使用`=`操作符为每一行输出行号，注意这个行号是独占一行的，因此使用管道符连接了第二个SED命令，每次读取两行，将换行符替换为Tab，这样就模拟出了`nl`命令的效果。
+
+### 模拟`cp`命令
+
+    $ sed -n 'w dup.txt' data.txt
+    $ diff data.txt dup.txt
+    $ echo $?
+    0
+
+### 模拟`expand`命令
+
+`expand`命令会转换输入中的TAB为空格，在SED中也可以模拟它
+
+    $ echo -e "One\tTwo\tThree" > test.txt
+    $ expand test.txt > expand.txt
+    $ sed 's/\t/     /g' test.txt > new.txt
+    $ diff new.txt expand.txt
+    $ echo $?
+    0
+
+### 模拟`tee`命令
+
+`tee`命令会将数据输出到标准输出的同时写入文件。
+
+    $ echo -e "Line #1\nLine #2" | tee test.txt  
+    Line #1 
+    Line #2 
+
+在SED中，实现该命令非常简单
+
+    $ sed -n 'p; w new.txt' test.txt
+    One Two Three
+
+### 模拟`cat -s`命令
+
+`cat -s`命令会将输入文件中的多行空格合并为一行。
+
+    $ echo -e "Line #1\n\n\n\nLine #2\n\n\nLine #3" | cat -s
+    Line #1
+    
+    Line #2
+    
+    Line #3
+
+在SED中实现
+
+    $ echo -e "Line #1\n\n\n\nLine #2\n\n\nLine #3" | sed '1s/^$//p;/./,/^$/!d'
+    Line #1
+    
+    Line #2
+    
+    Line #3
+
+> 这个命令我还没看懂，后续补上说明！
+
+### 模拟`grep`命令
+
+    $ echo -e "Line #1\nLine #2\nLine #3" | grep 'Line #1'
+    Line #1
+    $ echo -e "Line #1\nLine #2\nLine #3" | sed -n '/Line #1/p'
+    Line #1
+
+### 模拟`grep -v`命令
+
+    $ echo -e "Line #1\nLine #2\nLine #3" | grep -v 'Line #1'
+    Line #2
+    Line #3
+    $ echo -e "Line #1\nLine #2\nLine #3" | sed -n '/Line #1/!p'
+    Line #2
+    Line #3
+
+### 模拟`tr`命令
+
+`tr`命令用于字符转换
+
+    $ echo "ABC" | tr "ABC" "abc"
+    abc
+    $ echo "ABC" | sed 'y/ABC/abc/'
+    abc
+
+## 写在最后
+
+看到这里，你肯定要吐槽了，不是说了三十分钟学会吗？你确定你能三十分钟学会？上次的[三十分钟学会AWK][]说三十分钟学会不靠谱，这次又不靠谱了。不好意思，这里的三十分钟其实只是为了吸引你的注意而已，只有在你已经用过SED并对它的一些特性有所了解的情况下三十分钟看完才是有可能的，毕竟那么多特殊字符，那么多命令需要记住。不过话说回来，看完之后你有收获吗？有的话，那本文的目的就达到了，之后用到SED的时候再回来参考一下就可以了。
+
+本文将会持续修正和更新，最新内容请参考我的 [GITHUB](https://github.com/mylxsw) 上的 [程序猿成长计划](https://github.com/mylxsw/growing-up) 项目，欢迎 Star。
 
 ## 参考
 
