@@ -2,7 +2,7 @@
 
 ![](https://oayrssjpa.qnssl.com/2016-11-27-14802608583950.jpg)
 
-本文承接之前写的[三十分钟学会AWK][]一文，在学习完AWK之后，趁热打铁又学习了一下SED，不得不说这两个工具真的堪称文本处理神器，谁用谁知道！本文大部分内容依旧是翻译自Tutorialspoint上的入门教程，这次是 [Sed Tutorial](http://www.tutorialspoint.com/sed/index.htm) 一文，内容做了一些删减和补充，对原文中一些Demo也亲自测试了一番，希望本文对大家学习和了解Sed有所帮助。
+本文承接之前写的[三十分钟学会AWK][]一文，在学习完AWK之后，趁热打铁又学习了一下SED，不得不说这两个工具真的堪称文本处理神器，谁用谁知道！本文大部分内容依旧是翻译自Tutorialspoint上的入门教程，这次是 [Sed Tutorial](http://www.tutorialspoint.com/sed/index.htm) 一文，内容做了一些删减和补充，增加了一些原文中没有提及到的语法和命令的讲解，并且对原文所有的示例都一一进行了验证，希望本文对大家学习和了解Sed有所帮助。
 
 <!-- more -->
 
@@ -16,9 +16,7 @@ SED的英文全称是 **Stream EDitor**，它是一个简单而强大的文本�
 
 *McMahon*创建了一个通用的行编辑器，最终变成为了SED。SED的很多语法和特性都借鉴了**ed**编辑器。设计之初，它就已经支持正则表达式，SED可以从文件中接受类似于管道的输入，也可以接受来自标准输入流的输入。
 
-SED由自由软件基金组织（FSF）开发和维护并且随着GNU/Linux进行分发，因此，通常它也称作 **GNU SED**。对于新手来说，SED的语法看起来可能是非常神秘的，但是，一旦掌握了它的语法，你就可以只用几行代码去解决非常复杂的任务，这就是SED的魅力所在。
-
-<!-- more -->
+SED由自由软件基金组织（FSF）开发和维护并且随着GNU/Linux进行分发，因此，通常它也称作 **GNU SED**。对于新手来说，SED的语法看起来可能有些神秘，但是，一旦掌握了它的语法，你就可以只用几行代码去解决非常复杂的任务，这就是SED的魅力所在。
 
 ### SED的典型用途
 
@@ -35,17 +33,17 @@ SED的用途非常广泛，例如：
 
 ![](https://oayrssjpa.qnssl.com/2016-10-31-14614770425007.jpg)
 
-- **读取**： SED从输入流（文件，管道或者标准输入）中读取一行并且存储到它叫做 **pattern buffer** 的内部缓冲区
-- **执行**： 所有的SED命令都在**pattern buffer**中顺序的执行，默认情况下，除非指定了行的地址，否则SED命令将会在所有的行上依次执行
-- **显示**： 发送修改后的内容到输出流。在发送数据之后，**pattern buffer**将会被清空。
+- **读取**： SED从输入流（文件，管道或者标准输入）中读取一行并且存储到它叫做 模式空间（**pattern buffer**） 的内部缓冲区
+- **执行**： 默认情况下，所有的SED命令都在**模式空间**中顺序的执行，除非指定了行的地址，否则SED命令将会在所有的行上依次执行
+- **显示**： 发送修改后的内容到输出流。在发送数据之后，**模式空间**将会被清空。
 - 在文件所有的内容都被处理完成之前，上述过程将会重复执行
 
 ### 需要注意的几点
 
-- 模式缓冲区是SED内部使用的可变的内存存储区
-- 默认情况下，所有的SED命令都是在模式缓冲区中执行，因此输入文件并不会发生改变。GNU SED提供了修改输入文件的方法，我们将会在后续章节中介绍
-- 还有另外一个缓冲区叫做 **hold buffer**，它也是SED内部的可变内存存储区，数据可以存储在该缓冲区中以备以后提取。在每一个循环结束的时候，SED将会移除模式缓冲区中的内容，但是该缓冲区中的内容在所有的循环过程中是持久存储的。SED命令无法直接在该缓冲区中执行，因此SED允许数据在 **hold buffer** 和 **pattern buffer**之间切换
-- 初始情况下，**hold buffer** 和 **pattern buffer** 这两个缓冲区都是空的
+- 模式空间 （**pattern buffer**） 是一块活跃的缓冲区，在sed编辑器执行命令时它会保存待检查的文本
+- 默认情况下，所有的SED命令都是在模式空间中执行，因此输入文件并不会发生改变
+- 还有另外一个缓冲区叫做 保持空间 （**hold buffer**），在处理模式空间中的某些行时，可以用保持空间来临时保存一些行。在每一个循环结束的时候，SED将会移除模式空间中的内容，但是该缓冲区中的内容在所有的循环过程中是持久存储的。SED命令无法直接在该缓冲区中执行，因此SED允许数据在 **保持空间** 和 **模式空间**之间切换
+- 初始情况下，**保持空间** 和 **模式空间** 这两个缓冲区都是空的
 - 如果没有提供输入文件的话，SED将会从标准输入接收请求
 - 如果没有提供地址范围的话，默认情况下SED将会对所有的行进行操作
 
@@ -65,7 +63,7 @@ SED的用途非常广泛，例如：
 
 在上面的例子中，quote.txt是输入的文件名称，两个单引号是要执行的SED命令。
 
-首先，SED将会读取quote.txt文件中的一行内容存储到它的模式缓冲区中，然后会在该缓冲区中执行SED命令。在这里，没有提供SED命令，因此对该缓冲区没有要执行的操作，最后它会删除模式缓冲区中的内容并且打印该内容到标准输出，很简单的过程，对吧?
+首先，SED将会读取quote.txt文件中的一行内容存储到它的模式空间中，然后会在该缓冲区中执行SED命令。在这里，没有提供SED命令，因此对该缓冲区没有要执行的操作，最后它会删除模式空间中的内容并且打印该内容到标准输出，很简单的过程，对吧?
 
 在下面的例子中，SED会从标准输入流接受输入
 
@@ -108,7 +106,7 @@ SED的用途非常广泛，例如：
     4) The Fellowship of the Ring, J. R. R. Tolkien, 432
     6) A Game of Thrones, George R. R. Martin, 864
 
-我们还可以将多个SED命令写在一个文本文件中，然后将该文件作为SED命令的参数，SED可以对模式缓冲区中的内容执行文件中的每一个命令，下面的例子描述了SED的第二种用法
+我们还可以将多个SED命令写在一个文本文件中，然后将该文件作为SED命令的参数，SED可以对模式空间中的内容执行文件中的每一个命令，下面的例子描述了SED的第二种用法
 
 首先，创建一个包含SED命令的文本文件，为了便于理解，我们使用与之前相同的SED命令
 
@@ -129,7 +127,7 @@ SED的用途非常广泛，例如：
 
 SED支持下列标准选项：
 
-- **-n** 默认情况下，模式缓冲区中的内容在处理完成后将会打印到标准输出，该选项用于阻止该行为
+- **-n** 默认情况下，模式空间中的内容在处理完成后将会打印到标准输出，该选项用于阻止该行为
 
         $ sed -n '' quote.txt 
 	
@@ -214,7 +212,7 @@ SED中的循环有点类似于**goto**语句，SED可以根据标签（label）�
 
 乍看来上述的代码非常神秘，让我们逐步拆解一下
 
-- 第一行是`h;n;H;x`这几个命令，记得上面我们提到的 **hold buffer** 吗？第一个`h`是指将当前模式缓冲区中的内容覆盖到 **hold buffer**中，`n`用于提前读取下一行，并且覆盖当前模式缓冲区中的这一行，`H`将当前模式缓冲区中的内容追加到 **hold buffer** 中，最后的`x`用于交换模式缓冲区和**hold buffer**中的内容。因此这里就是指每次读取两行放到模式缓冲区中交给下面的命令进行处理
+- 第一行是`h;n;H;x`这几个命令，记得上面我们提到的 **保持空间** 吗？第一个`h`是指将当前模式空间中的内容覆盖到 **保持空间**中，`n`用于提前读取下一行，并且覆盖当前模式空间中的这一行，`H`将当前模式空间中的内容追加到 **保持空间** 中，最后的`x`用于交换模式空间和**保持空间**中的内容。因此这里就是指每次读取两行放到模式空间中交给下面的命令进行处理
 - 接下来是 **s/\n/, /** 用于将上面的两行内容中的换行符替换为逗号
 - 第三个命令在不匹配的时候跳转到**Print**标签，否则继续执行第四个命令
 - **:Print**仅仅是一个标签名，而`p`则是print命令
@@ -255,9 +253,11 @@ SED中的循环有点类似于**goto**语句，SED可以根据标签（label）�
  
      sed -n 'h;n;H;x; s/\n/, /; :Loop;/Paulo/s/^/-/; /----/!t Loop; p' books.txt 
 
-## 模式缓冲区
+## 模式空间和保持空间
 
-对任何文件的来说，最基本的操作就是输出它的内容，为了实现该目的，在SED中可以使用**print**命令打印出模式缓冲区中的内容。让我们学习一下模式缓冲区是什么吧！
+### 模式空间
+
+对任何文件的来说，最基本的操作就是输出它的内容，为了实现该目的，在SED中可以使用**print**命令打印出模式空间中的内容。
 
 首先创建一个包含行号，书名，作者和页码数的文件，在本文中我们将会使用该文件，你也可以创建任何其它的文件，但是这里我们就创建一个包含以下内容的文件
 
@@ -285,9 +285,9 @@ SED中的循环有点类似于**goto**语句，SED可以根据标签（label）�
     6) A Game of Thrones, George R. R. Martin, 864 
     6) A Game of Thrones, George R. R. Martin, 864
 
-你可能会疑惑，为什么每一行被显示了两次呢？
+你可能会疑惑，为什么每一行被显示了两次？
 
-你还记得SED的工作流吗？默认情况下，SED将会输出模式缓冲区中的内容，另外，我们的命令中包含了输出命令`p`，因此每一行被打印两次。但是不要担心，SED提供了**-n**参数用于禁止默认的模式缓冲区自动输出每一行的行为
+你还记得SED的工作流吗？默认情况下，SED将会输出模式空间中的内容，另外，我们的命令中包含了输出命令`p`，因此每一行被打印两次。但是不要担心，SED提供了**-n**参数用于禁止自动输出模式空间的每一行的行为
 
     $ sed -n 'p' books.txt 
     1) A Storm of Swords, George R. R. Martin, 1216 
@@ -297,7 +297,22 @@ SED中的循环有点类似于**goto**语句，SED可以根据标签（label）�
     5) The Pilgrimage, Paulo Coelho, 288 
     6) A Game of Thrones, George R. R. Martin, 864 
 
-祝贺你，我们已经获得了期望的输出了，默认情况下，SED会对所有行执行命令，不过我们也可以强制SED只操作指定的行。例如，在下面的示例中SED只会对第三行进行操作
+### 行寻址
+
+默认情况下，在SED中使用的命令会作用于文本数据的所有行。如果只想将命令作用于特定的行或者某些行，则需要使用 **行寻址** 功能。
+
+在SED中包含两种形式的行寻址：
+
+- 以数字形式表示的行区间
+- 以文本模式来过滤行
+
+两种形式都使用相同的语法格式
+
+    [address]command
+
+#### 数字方式的行寻址
+
+在下面的示例中SED只会对第3行进行操作
 
     $ sed -n '3p' books.txt 
     3) The Alchemist, Paulo Coelho, 197 
@@ -323,7 +338,7 @@ SED中的循环有点类似于**goto**语句，SED可以根据标签（label）�
     5) The Pilgrimage, Paulo Coelho,288
     6) A Game of Thrones, George R. R. Martin, 864
 
-SED还提供了另外两种操作符用于指定地址范围，第一个是加号（**+**）操作符，它可以与逗号（,）操作符一起使用，例如 `M, +n` 将会打印出从第`M`行开始的下`n`行。下面的示例将会输出第二行开始的下面四行
+SED还提供了另外两种操作符用于指定地址范围，第一个是加号（**+**）操作符，它可以与逗号（**,**）操作符一起使用，例如 `M, +n` 将会打印出从第`M`行开始的下`n`行。下面的示例将会输出第二行开始的下面四行
 
     $ sed -n '2,+4 p' books.txt 
     2) The Two Towers, J. R. R. Tolkien, 352 
@@ -348,24 +363,28 @@ SED还提供了另外两种操作符用于指定地址范围，第一个是加�
 
 > 注意，如果使用的是Mac系统自带的sed命令，可能不支持**~**和**+**操作符。可以使用`brew install gnu-sed --with-default-names`重新安装GNU-SED。
 
-## 模式匹配
+#### 使用文本模式过滤器
 
-在前面的章节中，我们学习了SED如何处理地址范围。本章将会介绍SED如何处理模式范围，模式范围可以是简单的文本或者复杂的正则表达式。下面的示例中，将会输出所有作者为Paulo Coelho的书籍。
+SED编辑器允许指定文本模式来过滤出命令要作用的行。格式如下：
+
+    /pattern/command
+
+必须用正斜线将要指定的pattern封起来。sed编辑器会将该命令作用到包含指定文本模式的行上。
+
+下面的示例中，将会输出所有作者为Paulo Coelho的书籍。
 
     $ sed -n '/Paulo/ p' books.txt
     3) The Alchemist, Paulo Coelho, 197 
     5) The Pilgrimage, Paulo Coelho, 288
 
-在上面的示例中，SED输出了匹配到Paulo的所有行。
-
-模式匹配也可以与地址范围同时使用，在下面的示例会从第一次匹配到`Alchemist`开始输出，直到第5行为止。
+模式匹配也可以与数字形式的寻址同时使用，在下面的示例会从第一次匹配到`Alchemist`开始输出，直到第5行为止。
 
     $ sed -n '/Alchemist/, 5 p' books.txt
     3) The Alchemist, Paulo Coelho, 197 
     4) The Fellowship of the Ring, J. R. R. Tolkien, 432 
     5) The Pilgrimage, Paulo Coelho, 288
 
-使用逗号（**,**）操作符指定匹配多个模式。下列的示例将会输出Two和Pilgrimage之间的所有行
+使用逗号（**,**）操作符指定匹配多个匹配的模式。下列的示例将会输出Two和Pilgrimage之间的所有行
 
     $ sed -n '/Two/, /Pilgrimage/ p' books.txt 
     2) The Two Towers, J. R. R. Tolkien, 352 
@@ -373,7 +392,7 @@ SED还提供了另外两种操作符用于指定地址范围，第一个是加�
     4) The Fellowship of the Ring, J. R. R. Tolkien, 432 
     5) The Pilgrimage, Paulo Coelho, 288
 
-在使用模式匹配的时候，与地址范围类似，可以使用加号操作符 **+**，它会输出从当前匹配位置开始的某几行，下面的示例会从第一次Two出现的位置开始输出接下来的4行
+在使用文本模式过滤器的时候，与数字方式的行寻址类似，可以使用加号操作符 **+**，它会输出从当前匹配位置开始的某几行，下面的示例会从第一次Two出现的位置开始输出接下来的4行
 
     $ sed -n '/Two/, +4 p' books.txt
     2) The Two Towers, J. R. R. Tolkien, 352 
@@ -382,11 +401,27 @@ SED还提供了另外两种操作符用于指定地址范围，第一个是加�
     5) The Pilgrimage, Paulo Coelho, 288 
     6) A Game of Thrones, George R. R. Martin, 864 
 
+### 保持空间
+
+在处理模式空间中的某些行时，可以用保持空间来临时保存一些行。有5条命令可用来操作保持空间
+
+| 命令 | 描述 |
+| --- | --- |
+| h | 将模式空间复制到保持空间 |
+| H | 将模式空间附加到保持空间 |
+| g | 将保持空间复制到模式空间 |
+| G | 将保持空间附加到模式空间 |
+| x | 交换模式空间和保持空间的内容 |
+
+关于保持空间这里就不在举例了，前面再**循环**部分讲解下面这个命令的时候我们已经对它的使用做了说明。
+
+     $ sed -n 'h;n;H;x;s/\n/, /;/Paulo/!b Print; s/^/- /; :Print;p' books2.txt 
+
 ## 基本命令
 
 本章将会讲解一些常用的SED命令，主要包括`DELETE`，`WRITE`，`APPEND`，`CHANGE`，`INSERT`，`TRANSLATE`，`QUIT`，`READ`，`EXECUTE`等命令。
 
-### `Delete`命令  **d**
+### 删除命令  **d**
 
 删除命令格式如下
 
@@ -394,11 +429,11 @@ SED还提供了另外两种操作符用于指定地址范围，第一个是加�
 
 `address1`和`address2`是开始和截止地址，它们可以是行号或者字符串匹配模式，这两种地址都是可选的。
 
-由命令的名称可以知道，**delete** 命令是用来执行删除操作的，并且因为SED是基于行的编辑器，因此我们说该命令是用来删除行的。注意的是，该命令只会移除模式缓冲区中的行，这样该行就不会被发送到输出流，但原始内容不会改变。
+由命令的名称可以知道，**delete** 命令是用来执行删除操作的，并且因为SED是基于行的编辑器，因此我们说该命令是用来删除行的。注意的是，该命令只会移除模式空间中的行，这样该行就不会被发送到输出流，但原始内容不会改变。
 
     $ sed 'd' books.txt 
 
-为什么没有输出任何内容呢？默认情况下，SED将会对每一行执行删除操作，这就是该命令为什么没有在标准输出中输出任何内容的原因。
+为什么没有输出任何内容？默认情况下，SED将会对每一行执行删除操作，这就是该命令为什么没有在标准输出中输出任何内容的原因。
 
 下列命令只移除第四行
 
@@ -430,9 +465,9 @@ SED的地址范围并不仅仅限于数字，我们也可以指定模式匹配�
     5) The Pilgrimage, Paulo Coelho, 288 
     6) A Game of Thrones, George R. R. Martin, 864 
 
-### `Write`命令 **w**
+### 文件写入命令 **w**
 
-SED提供了 **write** 命令用于将模式缓冲区中的内容写入到文件，与 **delete** 命令类似，下面是 **write** 命令的语法
+SED提供了 **write** 命令用于将模式空间中的内容写入到文件，与 **delete** 命令类似，下面是 **write** 命令的语法
 
     [address1[,address2]]w file 
 
@@ -476,7 +511,7 @@ SED提供了 **write** 命令用于将模式缓冲区中的内容写入到文件
     4) The Fellowship of the Ring, J. R. R. Tolkien, 432
 
 
-### `Append`命令 **a**
+### 追加命令 **a**
 
 文本追加命令语法：
 
@@ -518,7 +553,7 @@ SED提供了 **write** 命令用于将模式缓冲区中的内容写入到文件
     5) The Pilgrimage, Paulo Coelho, 288 
     6) A Game of Thrones, George R. R. Martin, 864 
 
-### `Change`命令 **c**
+### 行替换命令 **c**
 
 SED通过 **c** 提供了 **change** 和 **replace** 命令，该命令帮助我们使用新文本替换已经存在的行，当提供行的地址范围时，所有的行都被作为一组被替换为单行文本，下面是该命令的语法
 
@@ -553,7 +588,7 @@ SED也接受模式作为地址
     3) The Alchemist, Paulo Coelho, 197 
     4) Adultry, Paulo Coelho, 324
 
-### `Insert`命令 **i**
+### 插入命令 **i**
 
 插入命令与追加命令类似，唯一的区别是插入命令是在匹配的位置前插入新的一行。
 
@@ -571,18 +606,18 @@ SED也接受模式作为地址
     5) The Pilgrimage, Paulo Coelho, 288 
     6) A Game of Thrones, George R. R. Martin, 864
 
-### `Translate`命令 **y**
+### 转换命令 **y**
 
-转换命令的语法
+转换（Translate）命令 **y** 是唯一可以处理单个字符的sed编辑器命令。转换命令格式 如下
 
-    [address1[,address2]]y/list-1/list-2/
+    [address]y/inchars/outchars/
 
-该命令用于将*list-1*中的内容转换为*list-2*中的内容，这种转换是基于位置的，因此*list-1*和*list-2*中的内容必须是一一对应的，他们的大小必须相同，而且不支持正则表达式。
+转换命令会对inchars和outchars值进行一对一的映射。inchars中的第一个字符会被转换为outchars中的第一个字符，第二个字符会被转换成outchars中的第二个字符。这个映射过程会一直持续到处理完指定字符。如果inchars和outchars的长度不同，则sed编辑器会产生一 条错误消息。
 
     $ echo "1 5 15 20" | sed 'y/151520/IVXVXX/'
     I V IV XX
 
-### `l`命令 **l**
+### 输出隐藏字符命令 **l**
 
 你能通过直接观察区分出单词是通过空格还是tab进行分隔的吗？显然是不能的，但是SED可以为你做到这点。使用`l`命令（英文字母L的小写）可以显示文本中的隐藏字符（例如`\t`或者`$`字符）。
 
@@ -624,7 +659,7 @@ SED也接受模式作为地址
 
 > `l`命令是GNU-SED的一部分，其它的一些变体中可能无法使用该命令。
 
-### `Quit`命令 **q**
+### 退出命令 **q**
 
 在SED中，可以使用`Quit`命令退出当前的执行流
 
@@ -653,7 +688,7 @@ SED也接受模式作为地址
     $ echo $? 
     100
 
-### `Read`命令 **r**
+### 文件读取命令 **r**
 
 在SED中，我们可以让SED使用Read命令从外部文件中读取内容并且在满足条件的时候显示出来。
 
@@ -675,9 +710,9 @@ SED也接受模式作为地址
 
 > `r`命令也支持地址范围，例如*3, 5 r junk.txt*会在第三行，第四行，第五行后面分别插入*junk.txt*的内容
 
-### `Execute`命令 **e**
+### 执行外部命令 **e**
 
-如果你看过[三十分钟学会AWK][]一文，你可能已经知道了在AWK中可以执行外部的命令，那么在SED中呢，是否我们也可以这么做呢？
+如果你看过[三十分钟学会AWK][]一文，你可能已经知道了在AWK中可以执行外部的命令，那么在SED中我们是否也可以这样做？
 
 答案是肯定的，在SED中，我们可以使用`e`命令执行外部命令
 
@@ -710,7 +745,7 @@ SED也接受模式作为地址
     5) The Pilgrimage, Paulo Coelho, 288
     6) A Game of Thrones, George R. R. Martin, 864
 
-如果你仔细观察`e`命令的语法，你会发现其实它的*command*参数是可选的。在没有提供外部命令的时候，SED会将模式缓冲区中的内容作为要执行的命令。
+如果你仔细观察`e`命令的语法，你会发现其实它的*command*参数是可选的。在没有提供外部命令的时候，SED会将模式空间中的内容作为要执行的命令。
 
     $ echo -e "date\ncal\nuname" > commands.txt
     $ cat commands.txt
@@ -728,12 +763,50 @@ SED也接受模式作为地址
     27 28 29 30
     
     Darwin
+    
+### 排除命令 **!**
 
-### 其它命令
+感叹号命令（**!**）用来排除命令，也就是让原本会起作用的命令不起作用。
 
-#### N
+    $ sed -n '/Paulo/p' books.txt
+    3) The Alchemist, Paulo Coelho, 197
+    5) The Pilgrimage, Paulo Coelho, 288
+    $ sed -n '/Paulo/!p' books.txt
+    1) Storm of Swords, George R. R. Martin, 1216
+    2) The Two Towers, J. R. R. Tolkien, 352
+    4) The Fellowship of the Ring, J. R. R. Tolkien, 432
+    6) A Game of Thrones, George R. R. Martin, 864
 
-默认情况下，SED是基于单行进行操作的，有些情况下我们可能需要使用多行进行编辑，启用多行编辑使用`N`命令，与`n`不同的是，`N`并不会清除、输出模式缓冲区的内容，而是采用了追加模式。
+如上例所示，`p`命令原先是只输出匹配*Paulo*的行，添加`!`之后，变成了只输出不匹配*Paulo*的行。
+
+    $ sed -n '1!G; h; $p' books.txt
+    6) A Game of Thrones, George R. R. Martin, 864
+    5) The Pilgrimage, Paulo Coelho, 288
+    4) The Fellowship of the Ring, J. R. R. Tolkien, 432
+    3) The Alchemist, Paulo Coelho, 197
+    2) The Two Towers, J. R. R. Tolkien, 352
+    1) Storm of Swords, George R. R. Martin, 1216
+
+上面的命令实现了类似`tac`命令类似的输出，将文本内容倒序输出。看起来有些晦涩难懂，分解一下却十分简单：
+
+1. *1!G* 这句的意思是出了第一行之外，处理每一行的时候都将保持空间中的内容追加到模式空间（正序->倒序）
+2. *h* 将模式空间中的内容复制到保持空间以备下一行匹配的时候追加到下一行的后面
+3. *$p* 如果匹配到最后一行的话则输出模式空间中的内容
+4. 上述步骤不断重复直到文本结束刚好将文件内容翻转了一次
+
+### 多行命令
+
+在使用sed编辑器的基础命令时，你可能注意到了一个局限。所有的sed编辑器命令都是针对**单行**数据执行操作的。在sed编辑器读取数据流时，它会基于**换行符**的位置将数据分成行。sed编辑器根据定义好的脚本命令一次处理一行数据，然后移到下一行重复这个过程。
+
+幸运的是，sed编辑器的设计人员已经考虑到了这种情况，并设计了对应的解决方案。sed编辑器包含了三个可用来处理多行文本的特殊命令。
+
+- **N**：将数据流中的下一行加进来创建一个多行组来处理
+- **D**：删除多行组中的一行
+- **P**：打印多行组中的一行
+
+#### N - 加载下一行
+
+默认情况下，SED是基于单行进行操作的，有些情况下我们可能需要使用多行进行编辑，启用多行编辑使用`N`命令，与`n`不同的是，`N`并不会清除、输出模式空间的内容，而是采用了追加模式。
 
     [address1[,address2]]N
 
@@ -747,9 +820,19 @@ SED也接受模式作为地址
     The Pilgrimage ,Paulo Coelho
     A Game of Thrones ,George R. R. Martin
 
-#### P
+#### D - 删除多行中的一行
 
-`P`命令用于输出`N`命令创建的多行文本的模式缓冲区中的第一行。
+sed编辑器提供了多行删除命令**D**，它只删除模式空间中的第一行。该命令会删除到换行符（含 换行符）为止的所有字符。
+
+    $ echo '\nThis is the header line.\nThis is a data line.\n\nThis is the last line.' | sed '/^$/{N; /header/D}'
+    This is the header line.
+    This is a data line.
+    
+    This is the last line.
+
+#### P - 输出多行中的一行
+
+`P`命令用于输出`N`命令创建的多行文本的模式空间中的第一行。
 
     [address1[,address2]]P 
 
@@ -763,7 +846,27 @@ SED也接受模式作为地址
     The Pilgrimage
     A Game of Thrones
 
-#### v
+### 其它命令
+
+#### n - 单行next
+
+小写的n命令会告诉sed编辑器移动到数据流中的下一文本行，并且覆盖当前模式空间中的行。
+
+    $ cat data1.txt 
+    This is the header line.
+    
+    This is a data line.
+    
+    This is the last line.
+    $ sed '/header/{n ; d}' data1.txt 
+    This is the header line.
+    This is a data line.
+    
+    This is the last line.
+
+上面的命令中，首先会匹配包含*header*的行，之后将移动到数据流的下一行，这里是一个空行，然后执行`d`命令对改行进行删除，所有就看到了这样的结果：第一个空行被删除掉了。
+
+#### v - SED版本检查
 
 `v`命令用于检查SED的版本，如果版本大于参数中的版本则正常执行，否则失败
 
@@ -907,7 +1010,7 @@ SED也接受模式作为地址
 - **w**：存储改变的行到文件，比如`sed -n 's/Paulo Coelho/PAULO COELHO/w junk.txt' books.txt`
 - **i**：匹配时忽略大小写，比如`sed  -n 's/pAuLo CoElHo/PAULO COELHO/pi' books.txt`
 
-在执行替换操作的时候，如果要替换的内容中包含`/`，这个时候怎么办呢？很简单，添加转义操作符。
+在执行替换操作的时候，如果要替换的内容中包含`/`，这个时候怎么办？很简单，添加转义操作符。
 
     $ echo "/bin/sed" | sed 's/\/bin\/sed/\/home\/mylxsw\/src\/sed\/sed-4.2.2\/sed/'
     /home/mylxsw/src/sed/sed-4.2.2/sed
@@ -932,7 +1035,7 @@ SED也接受模式作为地址
 
 ## 管理模式
 
-前面已经讲解过模式缓冲区和**hold buffer**的用法，在本节中我们将会继续探索它们的用法。
+前面已经讲解过模式空间和**保持空间**的用法，在本节中我们将会继续探索它们的用法。
 
 > 本部分内容暂未更新，请关注[程序猿成长计划](https://github.com/mylxsw/growing-up) 项目，我将最先在Github的这个仓库中更新最新内容。
 
@@ -1057,6 +1160,45 @@ SED也接受模式作为地址
     $ echo -e "Line #1\n\n\nLine #2" | sed '/^$/d'
     Line #1
     Line #2
+    
+### 删除连续空行
+
+    $ echo -e "Line #1\n\n\nLine #2" | sed '/./,/^$/!d'
+    Line #1
+    
+    Line #2
+
+### 删除开头的空行
+
+    $ echo -e "\nLine #1\n\nLine #2" | sed '/./,$!d'
+    Line #1
+    
+    Line #2
+    
+### 删除结尾的空行
+
+    $ echo -e "\nLine #1\nLine #2\n\n" | sed ':start /^\n*$/{$d; N; b start }'
+    
+    Line #1
+    
+    Line #2
+
+### 过滤所有的html标签
+
+    $ cat html.txt
+    <html>
+    <head>
+        <title>This is the page title</title>
+    </head>
+    <body>
+        <p> This is the <b>first</b> line in the Web page.
+        This should provide some <i>useful</i> information to use in our sed script.
+    </body>
+    </html>                                                                                  
+    $ sed 's/<[^>]*>//g ; /^$/d' html.txt
+        This is the page title
+         This is the first line in the Web page.
+        This should provide some useful information to use in our sed script.
 
 ### 从C++程序中移除注释
 
@@ -1261,7 +1403,7 @@ SED也接受模式作为地址
     
     Line #3
 
-> 这个命令我还没看懂，后续补上说明！
+这里需要注意的是`/./,/^$/!d`这个命令，它的意思是匹配区间`/./`到`/^$`，区间的开始会匹配至少包含一个字符的行，结束会匹配一个空行，在这个区间中的行不会被删除。
 
 ### 模拟`grep`命令
 
@@ -1296,7 +1438,8 @@ SED也接受模式作为地址
 
 ## 参考
 
--  [Sed Tutorial](http://www.tutorialspoint.com/sed/index.htm)
+- [Sed Tutorial](http://www.tutorialspoint.com/sed/index.htm)
+- [Linux命令行与shell脚本编程大全（第3版）](http://www.ituring.com.cn/book/1698)
 
 
 [三十分钟学会AWK]:https://aicode.cc/san-shi-fen-zhong-xue-huiawk.html
