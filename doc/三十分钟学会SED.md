@@ -6,6 +6,8 @@
 
 <!-- more -->
 
+> 文中用到的测试文件可以在 [https://github.com/mylxsw/sed-demo](https://github.com/mylxsw/sed-demo)找到。
+
 本文将会持续修正和更新，最新内容请参考我的 [GITHUB](https://github.com/mylxsw) 上的 [程序猿成长计划](https://github.com/mylxsw/growing-up) 项目，欢迎 Star。
 
 [TOC]
