@@ -17,13 +17,13 @@
       field3 int(10) DEFAULT NULL,
       field4 float(15,4) DEFAULT NULL,
       field5 float(15,4) DEFAULT NULL,
-      field7 float(15,4) DEFAULT NULL,
+      field6 float(15,4) DEFAULT NULL,
       PRIMARY KEY (id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 我们创建了一个名为`test`的表，出了`id`字段之外还包含了多个字段，拥有这不同的数据类型。我们向这个表中插入一条数据
     
-    INSERT INTO test (field1, field2, field3, field4, field5) VALUE (100, 100, 100, 1.005, 3.5, 2.5);
+    INSERT INTO test (field1, field2, field3, field4, field5, field6) VALUE (100, 100, 100, 1.005, 3.5, 2.5);
     
 插入之后表中的数据是这样的
 
