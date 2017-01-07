@@ -12,3 +12,4 @@
 - [跟我一起学Laravel-EloquentORM高级部分](/doc/跟我一起学Laravel-EloquentORM高级部分.md)
 - [跟我一起学Laravel-常见问题](/doc/跟我一起学Laravel-常见问题.md)
 - [Shell脚本学习笔记](/doc/Shell脚本学习笔记.md)
+- [MySQL之ROUND函数四舍五入的陷阱](/doc/MySQL之ROUND函数四舍五入的陷阱.md)
