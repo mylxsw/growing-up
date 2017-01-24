@@ -13,3 +13,4 @@
 - [跟我一起学Laravel-常见问题](/doc/跟我一起学Laravel-常见问题.md)
 - [Shell脚本学习笔记](/doc/Shell脚本学习笔记.md)
 - [MySQL之ROUND函数四舍五入的陷阱](/doc/MySQL之ROUND函数四舍五入的陷阱.md)
+- [研发团队GIT开发流程新人学习指南](/doc/研发团队GIT开发流程新人学习指南.md)
