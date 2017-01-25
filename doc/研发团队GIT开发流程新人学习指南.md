@@ -1,11 +1,11 @@
 # 研发团队GIT开发流程新人学习指南
 
-![FullSizeRende](media/14642498575507/FullSizeRender.jpg)
+![FullSizeRende](https://oayrssjpa.qnssl.com/2017-01-24-FullSizeRender.jpg)
 
 
 [TOC]
 
-本文定位于为使用GIT标准分支开发流程的开发团队新人提供一份参考指南，其中的内容都是我们公司在研发团队初创时所遵循的一些开发流程标准，经过近一年的实践，虽说还有很多不足，但是随着团队经验的丰富和人员的扩张，我会适时地更新本文，分享我们在使用GIT开发流程中遇到的问题和解决方案。
+本文定位于为使用GIT标准分支开发流程的开发团队新人提供一份参考指南，其中的内容都是[我们公司](http://yunsomgroup.com/)在研发团队初创时所遵循的一些开发流程标准，经过近一年的实践，虽说还有很多不足，但是随着团队经验的丰富和人员的扩张，我会适时地更新本文，分享我们在使用GIT开发流程中遇到的问题和解决方案。
 
 本文将会持续修正和更新，最新内容请参考我的 [GITHUB](https://github.com/mylxsw) 上的 [程序猿成长计划](https://github.com/mylxsw/growing-up) 项目，欢迎 Star，更多精彩内容请 [follow me](https://github.com/mylxsw)。
 
