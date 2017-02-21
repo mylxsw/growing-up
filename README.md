@@ -21,4 +21,6 @@
 
 在小密圈里，我将会将学习过程中看到的那些精彩的文章推荐给大家，大家可以一起讨论，原创文章也会优先在小密圈中推荐哦！
 
+<div class="max-width: 800px">
 ![小密圈](https://oayrssjpa.qnssl.com/xiaomiquan.jpg)
+</div>
