@@ -1,5 +1,7 @@
 # 程序猿成长计划
 
+## 原创目录
+
 - [三十分钟学会AWK](/doc/三十分钟学会AWK.md)
 - [Docker学习笔记-基础命令](/doc/Docker学习笔记-基础命令.md)
 - [一小时学会Lua](/doc/一小时学会Lua.md)
@@ -14,3 +16,9 @@
 - [Shell脚本学习笔记](/doc/Shell脚本学习笔记.md)
 - [MySQL之ROUND函数四舍五入的陷阱](/doc/MySQL之ROUND函数四舍五入的陷阱.md)
 - [研发团队GIT开发流程新人学习指南](/doc/研发团队GIT开发流程新人学习指南.md)
+
+## 小密圈
+
+在小密圈里，我将会将学习过程中看到的那些精彩的文章推荐给大家，大家可以一起讨论，原创文章也会优先在小密圈中推荐哦！
+
+![小密圈](https://oayrssjpa.qnssl.com/xiaomiquan.jpg)
