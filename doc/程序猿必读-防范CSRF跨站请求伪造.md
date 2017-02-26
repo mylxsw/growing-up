@@ -1,7 +1,6 @@
 # 程序猿必读-防范CSRF跨站请求伪造
 
-![](https://oayrssjpa.qnssl.com/14881258582127.gif?imageView2/2/w/600/h/1000/interlace/0/q/100)
-
+![DSC00964](https://oayrssjpa.qnssl.com/2017-02-27-DSC00964.jpg?imageView2/2/w/600/h/1000/interlace/0/q/100)
 
 CSRF（Cross-site request forgery，中文为**跨站请求伪造**）是一种利用网站可信用户的权限去执行未授权的命令的一种恶意攻击。通过**伪装可信用户的请求来利用信任该用户的网站**，这种攻击方式不太流行，而且难以防范，但是其危害却并不比其他安全漏洞小。
 
