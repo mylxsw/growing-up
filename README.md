@@ -16,6 +16,7 @@
 - [Shell脚本学习笔记](/doc/Shell脚本学习笔记.md)
 - [MySQL之ROUND函数四舍五入的陷阱](/doc/MySQL之ROUND函数四舍五入的陷阱.md)
 - [研发团队GIT开发流程新人学习指南](/doc/研发团队GIT开发流程新人学习指南.md)
+- [程序猿必读-防范CSRF跨站请求伪造](/doc/程序猿必读-防范CSRF跨站请求伪造.md)
 
 ## 小密圈
 
