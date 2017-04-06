@@ -2,17 +2,17 @@
 
 ## 原创目录
 
-### Linux学习进阶
+### ※ Linux学习进阶
 
 - [三十分钟学会AWK](/doc/三十分钟学会AWK.md)
 - [三十分钟学会SED](/doc/三十分钟学会SED.md)
 - [Linux命令必知必会](/doc/Linux命令必知必会.md)
 
-### 程序猿必读
+### ※ 程序猿必读
 
 - [程序猿必读-防范CSRF跨站请求伪造](/doc/程序猿必读-防范CSRF跨站请求伪造.md)
 
-### 跟我一起学Laravel
+### ※ 跟我一起学Laravel
 
 - [跟我一起学Laravel-数据库操作和查询构造器](/doc/跟我一起学Laravel-数据库操作和查询构造器.md)
 - [跟我一起学Laravel-EloquentORM基础部分](/doc/跟我一起学Laravel-EloquentORM基础部分.md)
@@ -22,11 +22,11 @@
 
 - [MySQL之ROUND函数四舍五入的陷阱](/doc/MySQL之ROUND函数四舍五入的陷阱.md)
 
-### 团队协作
+### ※ 团队协作
 
 - [研发团队GIT开发流程新人学习指南](/doc/研发团队GIT开发流程新人学习指南.md)
 
-### 尚未完成
+### ※ 尚未完成
 
 - [Docker简明教程](/doc/Docker简明教程.md)
 - [一小时学会Lua](/doc/一小时学会Lua.md)
