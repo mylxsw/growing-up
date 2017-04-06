@@ -33,6 +33,8 @@
 - [Linux网络管理入门](/doc/Linux网络管理入门.md)
 - [Shell脚本学习笔记](/doc/Shell脚本学习笔记.md)
 - [Redis开发与实战读书笔记](/doc/Redis开发与实战读书笔记.md)
+- 程序猿必读之防范XSS跨站请求伪造攻击
+- 跟我一起学Laravel-集合及助手函数使用指南
 
 ## 讨论
 
