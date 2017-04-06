@@ -323,7 +323,7 @@ Docker提供了一个更加方便的工具exec，使用它可以直接在容器�
 
 当Docker启动的时候，它会在宿主主机上创建一个名为`docker0`的虚拟网络接口。
 
-![](media/14700581752688/14913989768427.jpg)
+![](https://oayrssjpa.qnssl.com/2017-04-06-14913989768427.jpg)
 
 ### 查看网络配置
 
@@ -331,7 +331,7 @@ Docker提供了一个更加方便的工具exec，使用它可以直接在容器�
 
     docker inspect --format '{{.NetworkSettings}}' 容器名称
 
-![](media/14700581752688/14913993674689.jpg)
+![](https://oayrssjpa.qnssl.com/2017-04-06-14913993674689.jpg)
 
 如果只需要查看容器的IP，则可以使用下面这样
 
