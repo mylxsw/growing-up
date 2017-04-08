@@ -2,7 +2,6 @@
 
 **尚未完成**
 
-![xx](./xxx.svg)
 
 ![学习-Redis开发和运维](https://oayrssjpa.qnssl.com/2017-04-07-学习-Redis开发和运维.jpg)
 
