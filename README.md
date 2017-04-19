@@ -45,6 +45,8 @@
 - [Centos使用vsftp搭建FTP服务器](/wiki/CentOS使用vsftp搭建FTP服务器.md)
 - [CentOS搭建samba服务器](/wiki/CentOS搭建samba服务器.md)
 - [连接gitlab套装中的postgres数据库](/wiki/连接gitlab套装中的postgres数据库.md)
+- [Linux实现端口转发](/wiki/Linux实现端口转发.md)
+- [使用expect记住SSH登陆密码](/wiki/使用expect记住SSH登陆密码.md)
 
 ## 讨论
 
