@@ -41,7 +41,7 @@
 
 这里包含了日常开发、运维过程中的一些常见工作的操作指南，指南尽可能简单，只包含操作步骤和命令，方便快速参考。
 
-- [Centos使用vsftp搭建FTP服务器](/wiki/Centos使用vsftp搭建FTP服务器.md)
+- [Centos使用vsftp搭建FTP服务器](/wiki/CentOS使用vsftp搭建FTP服务器.md)
 - [CentOS搭建samba服务器](/wiki/CentOS搭建samba服务器.md)
 
 ## 讨论
