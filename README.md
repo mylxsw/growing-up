@@ -43,6 +43,7 @@
 
 - [Centos使用vsftp搭建FTP服务器](/wiki/CentOS使用vsftp搭建FTP服务器.md)
 - [CentOS搭建samba服务器](/wiki/CentOS搭建samba服务器.md)
+- [连接gitlab套装中的postgres数据库](/wiki/连接gitlab套装中的postgres数据库.md)
 
 ## 讨论
 
