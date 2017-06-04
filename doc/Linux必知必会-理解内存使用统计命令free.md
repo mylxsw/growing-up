@@ -8,7 +8,7 @@
 
 ## 指标说明
 
-![](media/14965606121941/14965636958956.jpg)
+![](https://oayrssjpa.qnssl.com/14965636958956.jpg)
 
 使用`free`命令查看内存信息，最重要的是理解当前系统的可用内存并不是直接看 **free** 字段就可以看出来的，应该参考的是
 
@@ -77,7 +77,7 @@
 
     # free -t -a -g
 
-![](media/14965606121941/14965907444264.jpg)
+![](https://oayrssjpa.qnssl.com/14965907444264.jpg)
 
 
 本文将会持续修正和更新，最新内容请参考我的 [GITHUB](https://github.com/mylxsw) 上的 [程序猿成长计划](https://github.com/mylxsw/growing-up) 项目，欢迎 Star，更多精彩内容请 [follow me](https://github.com/mylxsw)。
