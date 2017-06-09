@@ -58,9 +58,3 @@
 《程序猿成长计划》系列文章都将会在微信公众号“程序猿成长计划”进行推送，需要的朋友可以关注一下，最新文章我将会通过公众号同步推送给大家。
 
 ![weixin](https://oayrssjpa.qnssl.com/qrcode_for_gh_604ed12b878c_344.jpg)
-
-## 小密圈
-
-在小密圈里，我将会将学习过程中看到的那些精彩的文章推荐给大家，大家可以一起讨论，原创文章也会优先在小密圈中推荐哦！
-
-![小密圈](https://oayrssjpa.qnssl.com/xiaomiquan.jpg?imageView2/2/w/600/h/1000/interlace/0/q/100)
