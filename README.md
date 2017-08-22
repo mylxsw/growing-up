@@ -51,6 +51,7 @@
 - [连接gitlab套装中的postgres数据库](/wiki/连接gitlab套装中的postgres数据库.md)
 - [Linux实现端口转发](/wiki/Linux实现端口转发.md)
 - [使用expect记住SSH登陆密码](/wiki/使用expect记住SSH登陆密码.md)
+- [Centos 6 安装配置RabbitMQ](/wiki/Centos%206%20安装配置RabbitMQ.md)
 
 ## 讨论
 
