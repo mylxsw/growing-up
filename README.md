@@ -17,6 +17,7 @@
 - [程序猿必读-防范CSRF跨站请求伪造](/doc/程序猿必读-防范CSRF跨站请求伪造.md)
 - [MySQL之ROUND函数四舍五入的陷阱](/doc/MySQL之ROUND函数四舍五入的陷阱.md)
 - [Redis性能监控大纲](https://mubu.com/doc/1gUfcI5kwc)
+- [RabbitMQ之AMQP协议大纲](https://mubu.com/doc/2WU-NCN7a8)
 
 ### ※ 跟我一起学Laravel
 
