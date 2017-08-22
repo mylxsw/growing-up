@@ -64,7 +64,7 @@
 
     rabbitmq-plugins enable rabbitmq_tracing
 
-![-w600](media/15020847601850/15034157780454.jpg)
+![-w600](https://oayrssjpa.qnssl.com/15034157780454.jpg)
 
     
 ## Monit监控
