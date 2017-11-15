@@ -109,9 +109,9 @@ Logstash启动关闭命令
     initctl start logstash
     initctl stop logstash
 
-**/etc/logstash/conf.d/biz-logs.conf**
+创建日志收集配置文件
 
-<script src="https://gist.github.com/mylxsw/48f2981274a259495ea0a8d027bcd239.js"></script>
+[/etc/logstash/conf.d/biz-logs.conf](https://gist.github.com/mylxsw/48f2981274a259495ea0a8d027bcd239)
 
 需要注意的几个配置（**/etc/logstash/logstash.yml**）
     
