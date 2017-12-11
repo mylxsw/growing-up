@@ -1,6 +1,6 @@
 # MySQL之ROUND函数四舍五入的陷阱
 
-![FullSizeRender 2](https://oayrssjpa.qnssl.com/2017-01-07-FullSizeRender 2.jpg)
+![FullSizeRender 2](https://oayrssjpa.qnssl.com/2017-01-07-FullSizeRender%202.jpg)
 
 [TOC]
 
