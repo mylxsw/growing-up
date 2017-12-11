@@ -18,6 +18,7 @@
 - [MySQL之ROUND函数四舍五入的陷阱](/doc/MySQL之ROUND函数四舍五入的陷阱.md)
 - [Redis性能监控大纲](https://mubu.com/doc/1gUfcI5kwc)
 - [RabbitMQ之AMQP协议大纲](https://mubu.com/doc/2WU-NCN7a8)
+- [MySQL数据类型选型参考](/doc/MySQL数据类型选型参考.md)
 
 ### ※ 跟我一起学Laravel
 
