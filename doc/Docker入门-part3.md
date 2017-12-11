@@ -168,5 +168,5 @@ Docker将会执行实时更新，不需要关掉这个栈或者是kill掉任何�
 [wget-for-windows]:http://gnuwin32.sourceforge.net/packages/wget.htm
 [terminal-recording]:https://asciinema.org/a/b5gai4rnflh7r0kie01fx6lip
 
-原文：[Get Started, Part 3: Services][https://docs.docker.com/get-started/part3/#recap-and-cheat-sheet-optional]
+原文：[Get Started, Part 3: Services](https://docs.docker.com/get-started/part3/#recap-and-cheat-sheet-optional)
 
