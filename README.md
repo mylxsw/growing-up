@@ -19,6 +19,7 @@
 - [Redis性能监控大纲](https://mubu.com/doc/1gUfcI5kwc)
 - [RabbitMQ之AMQP协议大纲](https://mubu.com/doc/2WU-NCN7a8)
 - [MySQL数据类型选型参考](/doc/MySQL数据类型选型参考.md)
+- [RabbitMQ发布订阅实战-实现延时重试队列](/doc/RabbitMQ发布订阅实战-实现延时重试队列.md)
 
 ### ※ 跟我一起学Laravel
 
