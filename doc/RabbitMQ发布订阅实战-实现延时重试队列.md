@@ -18,7 +18,8 @@ RabbitMQ是一款使用Erlang开发的开源消息队列。本文假设读者对
 
 具体流程见下图
 
-![RabbitMQ消息处理流程](https://oayrssjpa.qnssl.com/:Users:mylxsw:Downloads:RabbitMQ消息处理流程 -2-.jpg)
+![xxx](https://oayrssjpa.qnssl.com/xxx.jpg)
+
 
 
 1. 生产者发布消息到主Exchange
