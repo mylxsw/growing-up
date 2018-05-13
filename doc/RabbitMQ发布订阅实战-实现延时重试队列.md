@@ -80,6 +80,11 @@ $this->channel->exchange_declare('master.retry', 'topic', false, true, false);
 $this->channel->exchange_declare('master.failed', 'topic', false, true, false);
 ```
 
+在RabbitMQ的管理界面中，我们可以看到创建的三个Exchange
+
+![-w539](https://oayrssjpa.qnssl.com/15261952974338.jpg)
+
+
 ### 消息发布
 
 消息发布时，使用`basic_publish`方法，参数如下
@@ -189,6 +194,15 @@ $this->channel->queue_declare(
 );
 ```
 
+在RabbitMQ的管理界面中，Queues部分可以看到我们创建的三个队列
+
+![](https://oayrssjpa.qnssl.com/15261954013804.jpg)
+
+查看队列的详细信息，我们可以看到 **queueName@retry** 队列与其它两个队列的不同
+
+![-w486](https://oayrssjpa.qnssl.com/15261955782834.jpg)
+
+
 #### Bind Exchange & Queue 
 
 创建完队列之后，需要将队列与Exchange绑定（`bind`），不同队列需要绑定到之前创建的对应的Exchange上面
@@ -224,6 +238,17 @@ $this->channel->queue_bind($queueName, 'master', $routingKey);
 $this->channel->queue_bind($retryQueueName, 'master.retry', $routingKey);
 $this->channel->queue_bind($failedQueueName, 'master.failed', $routingKey);
 ```
+
+在RabbitMQ的管理界面中，我们可以看到该队列与Exchange和routing-key的绑定关系
+
+![-w361](https://oayrssjpa.qnssl.com/15261958610725.jpg)
+
+
+![-w405](https://oayrssjpa.qnssl.com/15261958150612.jpg)
+
+![-w399](https://oayrssjpa.qnssl.com/15261958961191.jpg)
+
+
 
 #### 消息消费实现
 
@@ -378,6 +403,27 @@ $this->channel->basic_publish(
     $msg->get('routing_key')
 );
 ```
+
+### 怎么使用
+
+队列和Exchange以及发布订阅的关系我们就说完了，那么使用起来是什么效果呢？这里我们以Java代码为例
+
+```java
+// 发布消息
+Publisher publisher = new Publisher(factory.newConnection(), 'master');
+publisher.publish("{\"id\":121, \"name\":\"guanyiyao\"}", "user.create");
+
+// 订阅消息
+new Subscriber(factory.newConnection(), Main.EXCHANGE_NAME)
+    .init("user-monitor", "user.*")
+    .subscribe((message, routingKey) -> {
+        // TODO 业务逻辑
+        System.out.printf("    <%s> message consumed: %s\n", routingKey, message);
+    }
+);
+```
+
+
 
 ## 总结
 
