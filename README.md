@@ -59,6 +59,7 @@
 - [使用expect记住SSH登陆密码](/wiki/使用expect记住SSH登陆密码.md)
 - [Centos 6 安装配置RabbitMQ](/wiki/Centos%206%20安装配置RabbitMQ.md)
 - [配置Redis主从服务](/wiki/配置Redis主从服务.md)
+- [vim操作速记.md](/wiki/vim操作速记.md)
 
 ## 讨论
 
