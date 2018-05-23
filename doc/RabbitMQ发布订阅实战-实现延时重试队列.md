@@ -151,10 +151,11 @@ Declare队列时，参数规定规则如下
 
 对于`@retry`重试队列，需要指定额外参数
 
-	'x-dead-letter-exchange' => 'master'
-	'x-message-ttl'          => 30 * 1000 // 重试时间设置为30s
+	'x-dead-letter-exchange'    => 'master'
+	'x-dead-letter-routing-key' => [queue_name],
+	'x-message-ttl'              => 30 * 1000 // 重试时间设置为30s
 
-> 这里的两个header字段的含义是，在队列中延迟30s后，将该消息重新投递到`x-dead-letter-exchange`对应的Exchange中
+> 这里的两个header字段的含义是，在队列中延迟30s后，将该消息重新投递到`x-dead-letter-exchange`对应的Exchange中，并且routing key指定为消费队列的名称，这样就可以实现消息只投递给原始出错时的队列，避免消息重新投递给所有关注当前routing key的消费者了。
 
 Java代码
 
@@ -172,6 +173,7 @@ channel.queueDeclare(queueName + "@failed", true, false, false, null);
 Map<String, Object> arguments = new HashMap<String, Object>();
 arguments.put("x-dead-letter-exchange", exchangeName());
 arguments.put("x-message-ttl", 30 * 1000);
+arguments.put("x-dead-letter-routing-key", queueName);
 channel.queueDeclare(queueName + "@retry", true, false, false, arguments);
 ```
 
@@ -189,6 +191,7 @@ $this->channel->queue_declare(
     false,           // nowait
     new AMQPTable([
         'x-dead-letter-exchange' => 'master',
+        'x-dead-letter-routing-key' => $queueName,
         'x-message-ttl'          => 30 * 1000,
     ])
 );
@@ -227,22 +230,23 @@ Java代码
 ```java
 // 绑定监听队列到Exchange
 channel.queueBind(queueName, "master", routingKey);
-channel.queueBind(queueName + "@failed", "master.failed", routingKey);
-channel.queueBind(queueName + "@retry", "master.retry", routingKey);
+channel.queueBind(queueName, exchangeName(), queueName);
+channel.queueBind(queueName + "@failed", "master.failed", queueName);
+channel.queueBind(queueName + "@retry", "master.retry", queueName);
 ```
 
 PHP代码
 
 ```php
 $this->channel->queue_bind($queueName, 'master', $routingKey);
-$this->channel->queue_bind($retryQueueName, 'master.retry', $routingKey);
-$this->channel->queue_bind($failedQueueName, 'master.failed', $routingKey);
+$this->channel->queue_bind($queueName, 'master', $queueName);
+$this->channel->queue_bind($retryQueueName, 'master.retry', $queueName);
+$this->channel->queue_bind($failedQueueName, 'master.failed', $queueName);
 ```
 
 在RabbitMQ的管理界面中，我们可以看到该队列与Exchange和routing-key的绑定关系
 
 ![-w361](https://oayrssjpa.qnssl.com/15261958610725.jpg)
-
 
 ![-w405](https://oayrssjpa.qnssl.com/15261958150612.jpg)
 
@@ -348,12 +352,12 @@ $this->channel->basic_consume(
 
 如果消息处理中出现异常，应该将该消息重新投递到重试Exchange，等待下次重试
 
-	basic_publish(msg, 'master.retry', routing-key)
+	basic_publish(msg, 'master.retry', queueName)
 	ack(delivery-tag) // 不要忘记了应答消费成功消息
 
 如果判断重试次数大于3次，仍然处理失败，则应该讲消息投递到失败Exchange，等待人工处理
 
-	basic_publish(msg, 'master.failed', routing-key)
+	basic_publish(msg, 'master.failed', queueName)
 	ack(delivery-tag) // 不要忘记了应答消费成功消息
 
 > 一定不要忘记ack消息，因为重试、失败都是通过将消息重新投递到重试、失败Exchange来实现的，如果忘记ack，则该消息在超时或者连接断开后，会重新被重新投递给消费者，如果消费者依旧无法处理，则会造成死循环。
@@ -370,13 +374,25 @@ try {
     long retryCount = getRetryCount(properties);
     if (retryCount > 3) {
         // 重试次数大于3次，则自动加入到失败队列
-        channel.basicPublish("master.failed", envelope.getRoutingKey(), MessageProperties.PERSISTENT_BASIC, body);
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("x-orig-routing-key", getOrigRoutingKey(properties, envelope.getRoutingKey()));
+        channel.basicPublish('master.failed', queueName, createOverrideProperties(properties, headers), body);
     } else {
         // 重试次数小于3，则加入到重试队列，30s后再重试
-        channel.basicPublish("master.retry", envelope.getRoutingKey(), properties, body);
+        Map<String, Object> headers = properties.getHeaders();
+        if (headers == null) {
+            headers = new HashMap<>();
+        }
+
+        headers.put("x-orig-routing-key", getOrigRoutingKey(properties, envelope.getRoutingKey()));
+        channel.basicPublish('master.retry', queueName, createOverrideProperties(properties, headers), body);
     }
 }
 ```
+
+在消息发送到重试队列和失败队列时，我们在消息的headers中添加了一个名为`x-orig-routing-key`的字段，该字段是实现消息重试的关键字段，由于我们的消息需要在不同的Exchange，Queue之间流转，为了避免消息在重新投递到主Exchange时，被所有的消费者队列重新消费，在重试过程中，我们将消息的routing-key修改为队列名称，直接投递给原始消费消息的队列。`x-orig-routing-key`用于在之后能够重新获取到最开始的routing-key。
+
+> 这里的重复消费是指 某个消息被两个消费方A和B消费了，其中A消费失败，B成功，这时候，消息由A消费者重新投递到主Exchange后，B消费队列也会获取到该消息，因此就会导致B消费者重复消费已经消费国的消息
 
 #### 失败任务重试
 
