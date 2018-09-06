@@ -11,7 +11,7 @@
 - [Linux必知必会-理解内存使用统计命令free](/doc/Linux必知必会-理解内存使用统计命令free.md)
 - [Tcpdump简明教程](/doc/tcpdump简明教程.md)
 - [Linux服务器下的HTTP抓包分析](/doc/Linux服务器下的HTTP抓包分析.md)
-
+- [Keepalived & LVS 搭建高可用的Web服务](/doc/keepalived-and-lvs.md)
 
 ### ※ 程序猿必读
 
