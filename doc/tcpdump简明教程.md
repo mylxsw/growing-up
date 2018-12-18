@@ -1,6 +1,6 @@
 # tcpdump简明教程
 
-![DSC07466](https://oayrssjpa.qnssl.com/DSC07466.jpg)
+![DSC07466](https://ssl.aicode.cc/DSC07466.jpg)
 
 本文翻译自 [A tcpdump Tutorial and Primer with Examples][original] 一文，在使用Linux系统进行网络抓包分析的时候，一直没有找到比较简便的非图形界面的方法，在Linux系统下`tcpdump`命令确实是一柄利器，但是一直苦于学习成本较高，迟迟没有下手。看了 [A tcpdump Tutorial and Primer with Examples][original] 这篇文章之后，发现其实使用`tcpdump`也没有那么困难，特别是其导出的cap文件，再使用wireshark等图形界面软件打开分析非常方便。因此，将其翻译出来，一方面方便自己学习，一方面也为像我一样对tcpdump感兴趣的人提供一个学习途径。
 
