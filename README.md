@@ -29,6 +29,7 @@
 - [跟我一起学Laravel-EloquentORM进阶部分](/doc/跟我一起学Laravel-EloquentORM进阶部分.md)
 - [跟我一起学Laravel-EloquentORM高级部分](/doc/跟我一起学Laravel-EloquentORM高级部分.md)
 - [跟我一起学Laravel-常见问题](/doc/跟我一起学Laravel-常见问题.md)
+- [Lumen微服务生成Swagger文档](/doc/Lumen微服务生成Swagger文档.md)
 
 
 ### ※ 团队协作
