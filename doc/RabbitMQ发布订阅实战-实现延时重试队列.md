@@ -18,7 +18,7 @@ RabbitMQ是一款使用Erlang开发的开源消息队列。本文假设读者对
 
 具体流程见下图
 
-![xxx](https://oayrssjpa.qnssl.com/xxx.jpg)
+![xxx](https://ssl.aicode.cc/xxx.jpg)
 
 
 
@@ -199,11 +199,11 @@ $this->channel->queue_declare(
 
 在RabbitMQ的管理界面中，Queues部分可以看到我们创建的三个队列
 
-![](https://oayrssjpa.qnssl.com/15261954013804.jpg)
+![](https://ssl.aicode.cc/15261954013804.jpg)
 
 查看队列的详细信息，我们可以看到 **queueName@retry** 队列与其它两个队列的不同
 
-![-w486](https://oayrssjpa.qnssl.com/15261955782834.jpg)
+![-w486](https://ssl.aicode.cc/15261955782834.jpg)
 
 
 #### Bind Exchange & Queue 
@@ -246,11 +246,11 @@ $this->channel->queue_bind($failedQueueName, 'master.failed', $queueName);
 
 在RabbitMQ的管理界面中，我们可以看到该队列与Exchange和routing-key的绑定关系
 
-![-w361](https://oayrssjpa.qnssl.com/15261958610725.jpg)
+![-w361](https://ssl.aicode.cc/15261958610725.jpg)
 
-![-w405](https://oayrssjpa.qnssl.com/15261958150612.jpg)
+![-w405](https://ssl.aicode.cc/15261958150612.jpg)
 
-![-w399](https://oayrssjpa.qnssl.com/15261958961191.jpg)
+![-w399](https://ssl.aicode.cc/15261958961191.jpg)
 
 
 
