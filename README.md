@@ -62,6 +62,7 @@
 - [Centos 6 安装配置RabbitMQ](/wiki/Centos%206%20安装配置RabbitMQ.md)
 - [配置Redis主从服务](/wiki/配置Redis主从服务.md)
 - [vim操作速记.md](/wiki/vim操作速记.md)
+- [CentOS 7 部署MongoDB复制集模式](/wiki/CentOS7部署MongoDB复制集模式.md)
 
 ## 讨论
 
