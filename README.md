@@ -63,6 +63,7 @@
 - [配置Redis主从服务](/wiki/配置Redis主从服务.md)
 - [vim操作速记](/wiki/vim操作速记.md)
 - [CentOS 7 部署MongoDB复制集模式](/wiki/CentOS7部署MongoDB复制集模式.md)
+- [MariaDB 10.0 从已有数据库创建新的从库](/wiki/MariaDB-10.0-从已有数据库创建新的从库.md)
 
 ## 讨论
 
