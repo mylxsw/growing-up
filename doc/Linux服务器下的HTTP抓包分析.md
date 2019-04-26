@@ -34,11 +34,11 @@
 > 
 >     scp account@ip:/path/to/captcha.cap .
 
-![](https://oayrssjpa.qnssl.com/15317212624721.jpg)
+![](https://ssl.aicode.cc/15317212624721.jpg)
 
 因为我们需要分析http包，直接打开看显然无法区分我们需要的内容，因此，可以在filter栏中添加过滤规则 `http`，这样就可以只展示http流量了
 
-![](https://oayrssjpa.qnssl.com/15317213481535.jpg)
+![](https://ssl.aicode.cc/15317213481535.jpg)
 
 当请求比较多的时候，我们还是无法快速区分出哪个是指定客户端的访问请求，好在强大的filter可以组合使用
 
@@ -46,15 +46,15 @@
 
 上面这个filter将会过滤出所有来自客户端 192.168.0.65 的http流量。
 
-![](https://oayrssjpa.qnssl.com/15317215272868.jpg)
+![](https://ssl.aicode.cc/15317215272868.jpg)
 
 找到我们需要分析的http请求了，那么怎么查看请求响应的内容呢？也很简单，只需要选中这个请求，右键 **Follow** - **HTTP Stream**：
 
-![](https://oayrssjpa.qnssl.com/15317216039417.jpg)
+![](https://ssl.aicode.cc/15317216039417.jpg)
 
 在新开的窗口中，我们就可以看到这个请求的所有内容了
 
-![](https://oayrssjpa.qnssl.com/15317217869717.jpg)
+![](https://ssl.aicode.cc/15317217869717.jpg)
 
 
 ## 总结
