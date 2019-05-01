@@ -74,3 +74,8 @@
 《程序猿成长计划》系列文章都将会在微信公众号“程序猿成长计划”进行推送，需要的朋友可以关注一下，最新文章我将会通过公众号同步推送给大家。
 
 ![weixin](https://oayrssjpa.qnssl.com/qrcode_for_gh_604ed12b878c_344.jpg)
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/mylxsw/growing-up.svg)](https://starchart.cc/mylxsw/growing-up)
+      
