@@ -2,6 +2,12 @@
 
 ## 原创目录
 
+### ※ MySQL 技术进阶
+
+- [MySQL 进阶：INFORMATION_SCHEMA 简介](/doc/mysql-information_schema.md)
+- 【50%】[MySQL进阶：事务、锁相关表以及死锁问题](/doc/mysql-lock-transaction.md)
+- 【0%】[MySQL进阶：Performance_Schema 简介](/doc/mysql-performance_schema.md)
+
 ### ※ Linux学习进阶
 
 - [三十分钟学会AWK](/doc/三十分钟学会AWK.md)
