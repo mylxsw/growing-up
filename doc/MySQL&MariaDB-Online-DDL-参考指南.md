@@ -1,11 +1,15 @@
 
 [TOC]
 
+![图文无关](https://ssl.aicode.cc/prometheus/20201026115911.JPG)
+
 ## 概述
 
 在早期的 MySQL 版本中，DDL 操作（如创建索引等）通常都需要对数据表加锁，操作过程中 DML 操作都会被阻塞，影响正常业务。MySQL 5.6 和 MariaDB 10.0 开始支持  Online  DDL，可以在执行 DDL 操作的同时，不影响 DML 的正常执行，线上直接执行 DDL 操作对用户基本无感知（部分操作对性能有影响）。
 
 不同版本的数据库对各种 DDL 语句的支持存在一定的差异，本文将会针对 MySQL 和 MariaDB 对 Online DDL 的支持情况做一个汇总，在需要执行 DDL 操作时，可以参考本文的 *Online DDL 支持情况* 部分。
+
+本文将会持续修正和更新，最新内容请参考我的 [GITHUB](https://github.com/mylxsw) 上的 [程序猿成长计划](https://github.com/mylxsw/growing-up) 项目，欢迎 Star，更多精彩内容请 [follow me](https://github.com/mylxsw)。
 
 在 `ALTER TABLE` 语句中，支持通过 `ALGORITHM` 和 `LOCK` 语句来实现 Online  DDL：
 
@@ -279,6 +283,10 @@ Online DDL 操作的性能取决于是否发生了表的重建。在对大表执
   - 没有任何机制可以暂停 Online DDL操作或限制 Online DDL 操作的 I/O 或CPU使用率
   - 如果操作失败，则回滚 Online DDL操作的代价非常高昂
   - 长时间运行的 Online  DDL 可能会导致复制延迟。 Online  DDL 操作必须在 Master 上执行完成后才能在 Slave 上执行，在这个过程中， 并发处理的 DML 在 Slave 上面必须等待 DDL 操作完成后才会执行。
+
+## 写在最后
+
+本文将会持续修正和更新，最新内容请参考我的 [GITHUB](https://github.com/mylxsw) 上的 [程序猿成长计划](https://github.com/mylxsw/growing-up) 项目，欢迎 Star，更多精彩内容请 [follow me](https://github.com/mylxsw)。
 
 ## 参考
 
