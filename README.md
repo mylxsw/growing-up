@@ -5,6 +5,7 @@
 ### ※ MySQL 技术进阶
 
 - [MySQL 进阶：INFORMATION_SCHEMA 简介](/doc/mysql-information_schema.md)
+- [MySQL & MariaDB Online DDL 参考指南](/doc/MySQL&MariaDB-Online-DDL-参考指南.md)
 - 【50%】[MySQL进阶：事务、锁相关表以及死锁问题](/doc/mysql-lock-transaction.md)
 - 【0%】[MySQL进阶：Performance_Schema 简介](/doc/mysql-performance_schema.md)
 
@@ -28,7 +29,6 @@
 - [MySQL数据类型选型参考](/doc/MySQL数据类型选型参考.md)
 - [RabbitMQ发布订阅实战-实现延时重试队列](/doc/RabbitMQ发布订阅实战-实现延时重试队列.md)
 - [根据 MTBF & MTTR 评估系统可用性](/doc/根据MTBF&MTTR评估系统可用性.md)
-- [MySQL & MariaDB Online DDL 参考指南](/doc/MySQL&MariaDB-Online-DDL-参考指南.md)
 
 ### ※ 跟我一起学Laravel
 
