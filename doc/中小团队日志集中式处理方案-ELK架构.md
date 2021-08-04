@@ -229,7 +229,7 @@ Kibana启动关闭命令
     service kibana start
     service kibana stop
 
-![-w1267](https://oayrssjpa.qnssl.com/15111040038258.jpg)
+![-w1267](https://ssl.aicode.cc/15111040038258.jpg)
 
 
 ### 需要注意的配置
