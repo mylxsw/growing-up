@@ -2,6 +2,10 @@
 
 ## 原创目录
 
+### ※ MongoDB 新手入门
+
+- [MongoDB 新手入门 - CRUD](/doc/MongoDB%20新手入门%20-%20CRUD.md)
+
 ### ※ MySQL 技术进阶
 
 - [MySQL 进阶：INFORMATION_SCHEMA 简介](/doc/mysql-information_schema.md)
