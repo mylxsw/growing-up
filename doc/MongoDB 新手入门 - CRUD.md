@@ -103,6 +103,8 @@ db.inventory.find({})
 ```js
 // 等价 SQL：SELECT * FROM inventory WHERE status = "D"
 db.inventory.find({status: "D"})
+// 等价 SQL：SELECT * FROM inventory WHERE status != "D"
+db.inventory.find({ status: { $ne: "D" } })
 ```
 
 #### IN 查询
@@ -110,7 +112,18 @@ db.inventory.find({status: "D"})
 ```js
 // 等价 SQL：SELECT * FROM inventory WHERE status in ("A", "D")
 db.inventory.find({status: { $in: ["A", "D"]}})
+// 等价 SQL: SELECT * FROM inventory WHERE status NOT IN ("A", "D")
+db.inventory.find({ status: { $nin: ["A", "D"] } })
 ```
+
+#### 范围查询
+
+```js
+// SQL: SELECT * FROM inventory WHERE qty >= 50 AND qty < 100
+db.inventory.find({ qty: { $gte: 50, $lt: 100 } })
+```
+
+比较操作符支持这些： `$lt`，`$gt`，`$gte`，`$lte`。
 
 #### AND 查询
 
@@ -134,6 +147,15 @@ db.inventory.find({
   status: "A",
   $or: [ { qty: { $lt: 30 } }, { item: /^p/ } ]
 })
+```
+
+#### NOT
+
+```js
+// 查询 qty 模 5 值为 1 的所有文档，这里匹配的 qty 可能值为 1， 6， 11， 16 等
+db.inventory.find({ qty: { $mod: [5, 1] } })
+// 查询 qty 模 5 值部位 1 的所有文档，可能值为2, 3, 4, 5, 7, 8, 9, 10, 12 等
+db.inventory.find({ qty: { $not: { $mod: [5, 1] } } })
 ```
 
 #### 查询嵌套的文档
@@ -280,6 +302,67 @@ db.inventory.find({ item: { $type: 10} })
 ```js
 db.inventory.find({ item: { $exists: false } })
 ```
+
+查询所有包含 item 字段，但是值为 `null` 的文档
+
+```js
+db.inventory.find({ item: { $eq: null, $exists: true } })
+```
+
+### 限制查询结果数量
+
+```js
+// 只查询 3 条数据
+db.inventory.find({}).limit(3)
+// 从第 2 条开始，查询 3 条数据
+db.inventory.find({}).limit(3).skip(2)
+```
+
+### 排序
+
+排序方向 `1` 为正序， `-1` 为倒序。
+
+```js
+db.inventory.find({}).sort({item: 1, qty: -1})
+```
+
+### 附录：支持的查询操作符
+
+| 类别          | 操作符                                                       | 用途                               |
+| ------------- | ------------------------------------------------------------ | ---------------------------------- |
+| Comparison    | [`$eq`](https://www.mongodb.com/docs/manual/reference/operator/query/eq/#mongodb-query-op.-eq) | 等值判断                           |
+| Comparison    | [`$gt`](https://www.mongodb.com/docs/manual/reference/operator/query/gt/#mongodb-query-op.-gt) | 大于某个值                         |
+| Comparison    | [`$gte`](https://www.mongodb.com/docs/manual/reference/operator/query/gte/#mongodb-query-op.-gte) | 大于等于某个值                     |
+| Comparison    | [`$in`](https://www.mongodb.com/docs/manual/reference/operator/query/in/#mongodb-query-op.-in) | 当前值在数组中                     |
+| Comparison    | [`$lt`](https://www.mongodb.com/docs/manual/reference/operator/query/lt/#mongodb-query-op.-lt) | 小于某个值                         |
+| Comparison    | [`$lte`](https://www.mongodb.com/docs/manual/reference/operator/query/lte/#mongodb-query-op.-lte) | 小于等于某个值                     |
+| Comparison    | [`$ne`](https://www.mongodb.com/docs/manual/reference/operator/query/ne/#mongodb-query-op.-ne) | 不等于某个值                       |
+| Comparison    | [`$nin`](https://www.mongodb.com/docs/manual/reference/operator/query/nin/#mongodb-query-op.-nin) | 当前值不再数组中                   |
+| Logical       | [`$and`](https://www.mongodb.com/docs/manual/reference/operator/query/and/#mongodb-query-op.-and) | AND                                |
+| Logical       | [`$not`](https://www.mongodb.com/docs/manual/reference/operator/query/not/#mongodb-query-op.-not) | 反转查询条件                       |
+| Logical       | [`$nor`](https://www.mongodb.com/docs/manual/reference/operator/query/nor/#mongodb-query-op.-nor) | 所有查询条件都不匹配               |
+| Logical       | [`$or`](https://www.mongodb.com/docs/manual/reference/operator/query/or/#mongodb-query-op.-or) | OR                                 |
+| Element       | [`$exists`](https://www.mongodb.com/docs/manual/reference/operator/query/exists/#mongodb-query-op.-exists) | 字段存在性检查                     |
+| Element       | [`$type`](https://www.mongodb.com/docs/manual/reference/operator/query/type/#mongodb-query-op.-type) | 字段类型检查                       |
+| Evaluation    | [`$expr`](https://www.mongodb.com/docs/manual/reference/operator/query/expr/#mongodb-query-op.-expr) | 在查询表达式中使用聚合语法         |
+| Evaluation    | [`$jsonSchema`](https://www.mongodb.com/docs/manual/reference/operator/query/jsonSchema/#mongodb-query-op.-jsonSchema) | 验证文档符合指定的 JSON 模型       |
+| Evaluation    | [`$mod`](https://www.mongodb.com/docs/manual/reference/operator/query/mod/#mongodb-query-op.-mod) | 对字段值进行取模运算               |
+| Evaluation    | [`$regex`](https://www.mongodb.com/docs/manual/reference/operator/query/regex/#mongodb-query-op.-regex) | 选择匹配正则表达式的文档           |
+| Evaluation    | [`$text`](https://www.mongodb.com/docs/manual/reference/operator/query/text/#mongodb-query-op.-text) | 执行文本搜索                       |
+| Evaluation    | [`$where`](https://www.mongodb.com/docs/manual/reference/operator/query/where/#mongodb-query-op.-where) | JavaScript 表达式匹配              |
+| Geospatial    | [`$geoIntersects`](https://www.mongodb.com/docs/manual/reference/operator/query/geoIntersects/#mongodb-query-op.-geoIntersects) | 地理坐标匹配                       |
+| Geospatial    | [`$geoWithin`](https://www.mongodb.com/docs/manual/reference/operator/query/geoWithin/#mongodb-query-op.-geoWithin) | 地理坐标匹配                       |
+| Geospatial    | [`$near`](https://www.mongodb.com/docs/manual/reference/operator/query/near/#mongodb-query-op.-near) | 地理坐标匹配                       |
+| Geospatial    | [`$nearSphere`](https://www.mongodb.com/docs/manual/reference/operator/query/nearSphere/#mongodb-query-op.-nearSphere) | 地理坐标匹配                       |
+| Array         | [`$all`](https://www.mongodb.com/docs/manual/reference/operator/query/all/#mongodb-query-op.-all) | 匹配包含查询中指定的所有元素的数组 |
+| Array         | [`$elemMatch`](https://www.mongodb.com/docs/manual/reference/operator/query/elemMatch/#mongodb-query-op.-elemMatch) | 数组中的元素匹配表达式则返回文档   |
+| Array         | [`$size`](https://www.mongodb.com/docs/manual/reference/operator/query/size/#mongodb-query-op.-size) | 选择数组大小为 size 的文档         |
+| Bitwise       | [`$bitsAllClear`](https://www.mongodb.com/docs/manual/reference/operator/query/bitsAllClear/#mongodb-query-op.-bitsAllClear) | 二进制匹配                         |
+| Bitwise       | [`$bitsAllSet`](https://www.mongodb.com/docs/manual/reference/operator/query/bitsAllSet/#mongodb-query-op.-bitsAllSet) | 二进制匹配                         |
+| Bitwise       | [`$bitsAnyClear`](https://www.mongodb.com/docs/manual/reference/operator/query/bitsAnyClear/#mongodb-query-op.-bitsAnyClear) | 二进制匹配                         |
+| Bitwise       | [`$bitsAnySet`](https://www.mongodb.com/docs/manual/reference/operator/query/bitsAnySet/#mongodb-query-op.-bitsAnySet) | 二进制匹配                         |
+| Miscellaneous | [`$comment`](https://www.mongodb.com/docs/manual/reference/operator/query/comment/#mongodb-query-op.-comment) | 在查询中添加注释                   |
+| Miscellaneous | [`$rand`](https://www.mongodb.com/docs/manual/reference/operator/query/rand/#mongodb-query-op.-rand) | 随机生成一个 0-1 之间的浮点值      |
 
 ## 更新文档
 
