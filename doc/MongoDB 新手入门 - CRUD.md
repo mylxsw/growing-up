@@ -2,6 +2,8 @@
 
 [TOC]
 
+本文是 MongoDB 新手入门 系列的第一篇，在本文中，我们将会讲解 MongoDB 基本的增删改查操作，在学习完本文后，读者将会掌握对 MongoDB 的集合文档进行基本的新增，修改，删除以及基于多种条件的查询操作。
+
 ## 插入文档
 
 在 MongoDB shell 中，插入文档有以下两个方法：
@@ -77,7 +79,7 @@ db.movies.insertMany([
 
 ## 查询文档
 
-最基本的查询方法是 `db.collection.find()` ，在 MongoDB 中插入以下文档
+最基本的查询方法是 `db.collection.find()` 和 `db.collection.findOne()` ，在 MongoDB 中插入以下文档
 
 ```javascript
 db.inventory.insertMany([
@@ -94,6 +96,8 @@ db.inventory.insertMany([
 ```javascript
 // 等价 SQL：SELECT * FROM inventory
 db.inventory.find({})
+// 等价 SQL：SELECT * FROM inventory LIMIT 1
+db.inventory.findOne({})
 ```
 
 ### 指定查询条件
@@ -325,6 +329,30 @@ db.inventory.find({}).limit(3).skip(2)
 ```js
 db.inventory.find({}).sort({item: 1, qty: -1})
 ```
+
+### 查询集合中的文档数量
+
+该方法用于查询匹配条件的文档数量，语法为
+
+```js
+db.collection.count(query, options)
+```
+
+示例
+
+```js
+db.orders.count( { ord_dt: { $gt: new Date('01/01/2012') } } )
+```
+
+### 查询字段的唯一值 distinct
+
+查询集合中字段的唯一值，语法为
+
+```js
+db.collection.distinct(field, query, options)
+```
+
+![image-20220530161334807](https://raw.githubusercontent.com/mylxsw/gallery/main/assets/2022/05/30/161340-71235594fed4d6283cea1606b5d39d4d-image-20220530161334807.png)
 
 ### 附录：支持的查询操作符
 
