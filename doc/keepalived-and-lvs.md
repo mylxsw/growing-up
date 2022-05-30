@@ -7,7 +7,7 @@
 
 在本文中，我将会讲述如何在Centos 7下基于Keepalived和LVS技术，实现Web服务的高可用和负载均衡，我们的目标拓扑结构如下图所示
 
-![未命名文件](https://oayrssjpa.qnssl.com/%E6%9C%AA%E5%91%BD%E5%90%8D%E6%96%87%E4%BB%B6.jpg)
+![未命名文件](https://ssl.aicode.cc/%E6%9C%AA%E5%91%BD%E5%90%8D%E6%96%87%E4%BB%B6.jpg)
 
 本文将会持续修正和更新，最新内容请参考我的 [GITHUB](https://github.com/mylxsw) 上的 [程序猿成长计划](https://github.com/mylxsw/growing-up) 项目，欢迎 Star，更多精彩内容请 [follow me](https://github.com/mylxsw)。
 
@@ -123,37 +123,37 @@ VIP为 `192.168.88.100`，客户端IP为 `192.168.88.2`。
 
 然后，我们可以看到 **keepalived** 服务器绑定了VIP **192.168.88.100**
 
-![](https://oayrssjpa.qnssl.com/15362090253889.jpg)
+![](https://ssl.aicode.cc/15362090253889.jpg)
 
 **keepalived** 服务器
 
-![-w614](https://oayrssjpa.qnssl.com/15362042379187.jpg)
+![-w614](https://ssl.aicode.cc/15362042379187.jpg)
     
 **keepalived-backup**服务器
  
- ![-w615](https://oayrssjpa.qnssl.com/15362042587330.jpg)          
+ ![-w615](https://ssl.aicode.cc/15362042587330.jpg)          
  
 我们验证一下主服务器挂掉之后，备份服务器是否能够正常接替工作，在 **keepalived** 服务器上，执行 `systemctl stop keepalived` 命令，停止keepalived服务，模拟服务器挂掉的情景，然后我们看到
 
-![](https://oayrssjpa.qnssl.com/15362090457018.jpg)
+![](https://ssl.aicode.cc/15362090457018.jpg)
 
 
 **keepalived** 服务器
 
-![-w616](https://oayrssjpa.qnssl.com/15362042064293.jpg)
+![-w616](https://ssl.aicode.cc/15362042064293.jpg)
 
 **keepalived-backup**服务器
            
-![-w632](https://oayrssjpa.qnssl.com/15362041802216.jpg)
+![-w632](https://ssl.aicode.cc/15362041802216.jpg)
 
 
 VIP成功漂移到了备份服务器，在备份服务器的`/var/log/message`日志中，可以看到如下信息
 
-![-w858](https://oayrssjpa.qnssl.com/15362041371710.jpg)
+![-w858](https://ssl.aicode.cc/15362041371710.jpg)
 
 重启 **keepalived** 服务器的Keepalived服务（`systemctl start keepalived`），模拟服务器恢复，我们可以看到VIP又重新漂移回了 **keepalived** 服务器（因为 **keepalived** 服务器设置的 `priority` 大于 **keepalived-backup** 服务器的设置）。查看 **keepalived-backup** 的日志，可以看到下面信息
 
-![-w1033](https://oayrssjpa.qnssl.com/15362044690887.jpg)
+![-w1033](https://ssl.aicode.cc/15362044690887.jpg)
 
 
 ## LVS实现负载均衡
@@ -219,11 +219,11 @@ VIP成功漂移到了备份服务器，在备份服务器的`/var/log/message`�
 
 然后我们在客户端访问以下我们的web服务，这里我们就可以使用VIP来访问了
 
-![-w267](https://oayrssjpa.qnssl.com/15362058058752.jpg)
+![-w267](https://ssl.aicode.cc/15362058058752.jpg)
 
 可以看到，请求被分配到了两台真实的web服务器。在 **keepalived** 服务器上执行 `ipvsadm`
 
-![-w565](https://oayrssjpa.qnssl.com/15362061774332.jpg)
+![-w565](https://ssl.aicode.cc/15362061774332.jpg)
 
 如果此时**node-1**的服务挂了怎么办？我们来模拟一下，在**node-1**上面，我们停止web服务
 
@@ -231,11 +231,11 @@ VIP成功漂移到了备份服务器，在备份服务器的`/var/log/message`�
 
 等几秒之后（我们配置健康检查周期为6s）然后再来请求
 
-![-w270](https://oayrssjpa.qnssl.com/15362060114525.jpg)
+![-w270](https://ssl.aicode.cc/15362060114525.jpg)
 
 在 **keepalived** 服务器上执行 `ipvsadm`
 
-![-w558](https://oayrssjpa.qnssl.com/15362061057170.jpg)
+![-w558](https://ssl.aicode.cc/15362061057170.jpg)
 
 可以看到，有问题的 **node-1** 已经被剔除了。
 
@@ -248,23 +248,23 @@ VIP成功漂移到了备份服务器，在备份服务器的`/var/log/message`�
 
     使用NAT模式，正常的流程应该是这样的，在NAT模式下，客户端（**192.168.1.2**）请求经过负载均衡器（**192.168.88.100**）后，负载均衡器会修改目的IP地址为真实的web服务器IP地址 **192.168.88.10**，这样web服务器收到请求后，发现目的IP地址是自己，就可以处理该请求了。响应报文发送给负载均衡器，负载均衡器修改响应报文的源IP地址为自身VIP，这样客户端收到响应后就能够正常处理了。
     
-    ![keepalive原理 -1-](https://oayrssjpa.qnssl.com/keepalive%E5%8E%9F%E7%90%86%20-1-.jpg)
+    ![keepalive原理 -1-](https://ssl.aicode.cc/keepalive%E5%8E%9F%E7%90%86%20-1-.jpg)
 
     我们的客户端和服务器都在同一个子网下。处理完成后响应给客户端时，响应报文的源IP地址为 **192.168.88.10**，目的IP为 **192.168.88.2**，由于在同一个子网中，因此不会经过负载均衡器，而是直接将报文发送给了客户端。因此在响应报文中，源IP地址尚未经过修改直接发送给了客户端，导致无法正常完成通信。
 
-    ![keepalive原理](https://oayrssjpa.qnssl.com/keepalive%E5%8E%9F%E7%90%86.jpg)
+    ![keepalive原理](https://ssl.aicode.cc/keepalive%E5%8E%9F%E7%90%86.jpg)
 
     
 - 第二个是为什么使用DSR模式必须将VIP绑定到web服务器的网卡上去？
 
     在DSR模式下，发送给负载均衡器的报文没有经过任何修改就直接发送给了真实的web服务器，这时候目的IP地址是 VIP **192.168.88.100**，Web服务器收到该请求之后，发现目的IP地址不是自己，会认为这个报文不是发送给自己的，无法处理该请求。也就是说，在使用DSR模式下，仅仅在负载均衡器上做配置是无法实现负载均衡的。因此最简单的方式就是将VIP绑定到真实服务器的回环接口上。之所以子网掩码时 **255.255.255.255**（或者**/32**），是让其广播地址是其自身，避免其发送ARP到该子网的广播域，防止负载均衡器上的VIP和Web服务器的IP冲突。
     
-    ![keepalive原理 -3-](https://oayrssjpa.qnssl.com/keepalive%E5%8E%9F%E7%90%86%20-3-.jpg)
+    ![keepalive原理 -3-](https://ssl.aicode.cc/keepalive%E5%8E%9F%E7%90%86%20-3-.jpg)
     
 
 对于负载均衡算法，我们这里采用了`wlc`（加权最小连接调度）。其它调度算法如下（图来自 《24小时365天不间断服务：服务器基础设施核心技术》一书）
 
-![](https://oayrssjpa.qnssl.com/15362051776668.jpg)
+![](https://ssl.aicode.cc/15362051776668.jpg)
 
 
 ## 总结
