@@ -2,26 +2,17 @@
 
 [TOC]
 
-聚合操作用于处理多个文档并且返回计算后的结果，我们可以用聚合操作来实现以下功能：
+本文是 MongoDB 新手入门 系列的第二篇，在本文中，我们将会讲解 MongoDB 的聚合框架，在看完本文后，读者可以掌握使用 MongoDB 进行常用的数据统计分析方法。
 
-- 对多个文档进行分组
-- 对分组后的数据执行操作，返回单个结果
-- 分析数据随时间的变更
-
-有两种方式来实现聚合操作：
-
-- 聚合管道（Aggregation Pipelines）：这是执行聚合操作推荐的方式
-- 单一功能的聚合方法：使用起来比较简单，但是缺少很多聚合管道的能力
-
-## 聚合管道
+## 简介
 
 ![image-20220530113736173](https://raw.githubusercontent.com/mylxsw/gallery/main/assets/2022/05/30/113736-7358ecd0f2dee5fd572cd77c082bd83c-image-20220530113736173.png)
 
-聚合管道（Aggregation Pipelines）包含一个或多个用于处理文档的步骤（stages）：
+聚合管道（Aggregation Pipelines）中包含一个或多个用于处理文档的步骤（stages）：
 
-- 每一个步骤（stage）都会对输入的文档执行一个操作，例如，一个步骤可以用于过滤文档，分组文档并且计算值
-- 一个步骤输出的文档将会作为下一个步骤的输入
-- 聚合管道可以返回文档分组后的结果，比如返回当前值，平均值，最大值和最小值等
+- 每一个步骤（stage）都会对输入的文档执行某个操作，例如，`$match` 步骤可以用于筛选文档，`$group` 步骤可以对文档进行分组并且计算字段的平均值
+- 每个步骤的输出文档将会作为下一个步骤的输入文档
+- 所有步骤执行完成后，聚合管道会返回文档处理后的结果，比如返回当前值，平均值，最大值和最小值等
 
 > MongoDB 4.2 开始，可以使用聚合管道来更新文档了。
 
@@ -31,7 +22,7 @@
 db.collection.aggregate( [ { <stage> }, ... ] )
 ```
 
-为了更好地演示聚合管道的功能，我们现在 MongoDB 中创建一个 `orders` 集合，插入以下数据
+为了演示聚合管道的功能，我们现在 MongoDB 中创建一个 `orders` 集合，插入以下数据
 
 ```js
 db.orders.insertMany( [
@@ -102,9 +93,50 @@ db.orders.aggregate( [
 ]
 ```
 
-### 常用聚合管道 stages
+## 系统变量
 
-在 `db.collection.aggreagte()` 方法中，除了 `$out`，`$merge`，`$geoNear` 之外，其它的 stage 都可以出现多次。常用的 stage 如下
+在聚合管道的步骤中可以使用系统变量或者用户自定义的变量，变量可以是任意的 BSON 类型数据，要访问变量的值，使用前缀 `$$`， 如 `$$<variable>`。如果变量引用的是一个对象，可以这样访问指定的字段 `$$<variable>.<field>`。
+
+MongoDB 中定义了以下系统变量
+
+| 变量         | 描述                                                         |
+| ------------ | ------------------------------------------------------------ |
+| NOW          | 当前日期时间                                                 |
+| CLUSTER_TIME | 当前时间戳，`CLUSTER_TIME` 只在副本集和分片集群中有效        |
+| ROOT         | 引用根文档                                                   |
+| CURRENT      | 引用聚合管道正在处理的字段路径开始部分，除非特别说明，所有的 stage 开始的时候 `$CURRENT` 都和 `$ROOT` 相同。`$CURRENT` 是可修改的，`$<field>` 等价于 `$$CURRENT.<field>`，重新绑定 `CURRENT` 会改变 `$` 的含义 |
+| REMOVE       | 标识值为缺失，用于按条件来排除字段，配合 `$project`使用时，把一个字段设置为变量 `REMOVE` 可以在输出中排除这个字段，参考 [有条件的排除字段](https://www.mongodb.com/docs/manual/reference/operator/aggregation/project/#std-label-remove-example) |
+| DESCEND      | [`$redact`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/redact/#mongodb-pipeline-pipe.-redact) 表达式允许的结果之一 |
+| PRUNE        | [`$redact`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/redact/#mongodb-pipeline-pipe.-redact) 表达式允许的结果之一 |
+| KEEP         | [`$redact`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/redact/#mongodb-pipeline-pipe.-redact) 表达式允许的结果之一 |
+
+这里以 `$$REMOVE` 为例，说明系统变量的使用
+
+```js
+db.books.aggregate( [
+   {
+      $project: {
+         title: 1,
+         "author.first": 1,
+         "author.last" : 1,
+         "author.middle": {
+            // 这里判断 $author.middle 是否为空，为空则将该字段移除，否则返回该字段
+            $cond: {
+               if: { $eq: [ "", "$author.middle" ] },
+               then: "$$REMOVE",
+               else: "$author.middle"
+            }
+         }
+      }
+   }
+] )
+```
+
+> 这里的 [`$cond`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/cond/) 操作符用于计算一个 Bool 表达式，类似于编程语言中的三元运算符。
+
+## 聚合管道中常用的步骤
+
+在 `db.collection.aggreagte()` 方法中，除了 `$out`，`$merge`，`$geoNear` 之外，其它的 stage 都可以出现多次。
 
 | Stage                                                        | 描述                                                         |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -140,7 +172,9 @@ db.orders.aggregate( [
 | [`$unset`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/unset/#mongodb-pipeline-pipe.-unset) | 从文档中移除指定字段                                         |
 | [`$unwind`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/unwind/#mongodb-pipeline-pipe.-unwind) | 将文档中的数组字段拆分为多个文档                             |
 
-#### $match
+本文只对常用的几个 stage 进行重点介绍，它们分别是 `$match`，`$count`，`$limit`，`$project`，`$lookup`，`$group`，`$facet`，`$unwind`，`$bucket`，`$bucketAuto`。
+
+### 文档过滤 $match
 
 `$match` 用于过滤筛选文档，语法如下
 
@@ -176,7 +210,7 @@ db.articles.aggregate(
 { "_id" : ObjectId("512bc962e835e68f199c8687"), "author" : "dave", "score" : 85, "views" : 521 }
 ```
 
-#### $count
+### 文档计数 $count
 
 `$count` 用于统计输入中的文档数量，语法如下
 
@@ -199,7 +233,7 @@ db.getCollection("orders").aggregate([
 {"price_gt_15_count" : NumberInt(5) }
 ```
 
-#### $limit
+### 文档数量限制 $limit
 
 `$limit` 用于控制传递给下一个 stage 的文档数量，语法为
 
@@ -213,7 +247,7 @@ db.getCollection("orders").aggregate([
 db.getCollection("orders").aggregate([{$limit: 2}])
 ```
 
-#### $project
+### 文档字段映射 $project
 
 `$project` 用于控制文档中包含的字段，类似于 SQL 中的 `AS`，它会把文档中指定的字段传递个下一个 stage。
 
@@ -249,13 +283,13 @@ db.orders.aggregate([
 { "name" : "Cheese", "size" : "medium" }
 ```
 
-#### $lookup
+### 左外连接 $lookup
 
 `$lookup` 用于对同一个数据库中的集合进行 `left outer join` 操作。
 
 ![image-20220530112940621](https://raw.githubusercontent.com/mylxsw/gallery/main/assets/2022/05/30/112940-45197bccfdcea531578bb93f1bd87e9c-image-20220530112940621.png)
 
-##### 单个 Join 条件的等值匹配
+#### 单个 Join 条件的等值匹配
 
 语法如下
 
@@ -366,7 +400,7 @@ db.orders.aggregate( [
 }
 ```
 
-##### 联表后的集合上的 Join 条件和子查询
+#### 联表后的集合上的 Join 条件和子查询
 
 语法如下
 
@@ -482,7 +516,7 @@ db.orders.aggregate( [
 }
 ```
 
-##### 使用简洁语法的相关子查询
+#### 使用简洁语法的相关子查询
 
 该特性为 MongoDB 5.0  的新功能。从 MongoDB 5.0 开始，可以使用简洁的语法进行相关子查询，相关子查询的子查询文档字段来自于连接的 foreign 和 local  集合。
 
@@ -515,7 +549,7 @@ WHERE <output array field> IN (
 );
 ```
 
-#### $group
+### 分组 $group
 
 ![image-20220530104816469](https://raw.githubusercontent.com/mylxsw/gallery/main/assets/2022/05/30/104816-9a3b464686a22f7a562ee0f87ad80903-image-20220530104816469.png)
 
@@ -554,7 +588,7 @@ WHERE <output array field> IN (
 
 > 默认情况下， `$group` 步骤有 100M 的内存限制，如果超过这个限制将会报错。可以使用  [allowDiskUse](https://www.mongodb.com/docs/manual/reference/command/aggregate/#std-label-aggregate-cmd-allowDiskUse) 选项来启用磁盘临时文件来解决这个问题。
 
-##### 统计不同大小的披萨订单销售总量
+#### 统计不同大小的披萨订单销售总量
 
 ```js
 db.getCollection("orders").aggregate(
@@ -580,7 +614,7 @@ db.getCollection("orders").aggregate(
 { "_id" : "large", "count" : 2.0 }
 ```
 
-##### 查询订单中有几种尺寸的披萨
+#### 查询订单中有几种尺寸的披萨
 
 ```js
 db.getCollection("orders").aggregate([
@@ -598,7 +632,7 @@ db.getCollection("orders").aggregate([
 { "_id" : "small" }
 ```
 
-##### 查询销量大于等于 3 个的披萨尺寸
+#### 查询销量大于等于 3 个的披萨尺寸
 
 类似于 SQL 中的 `GROUP BY ... HAVING COUNT(*) >= 3`
 
@@ -626,7 +660,7 @@ db.getCollection("orders").aggregate(
 { "_id" : "small", "count" : 3.0 }
 ```
 
-##### 对披萨订单按照尺寸分组，返回每个组中披萨的名称集合
+#### 对披萨订单按照尺寸分组，返回每个组中披萨的名称集合
 
 ```js
 db.getCollection("orders").aggregate([
@@ -647,7 +681,7 @@ db.getCollection("orders").aggregate([
 { "_id" : "medium", "names" : [ "Pepperoni", "Cheese", "Vegan" ] }
 ```
 
-##### 按照披萨订单尺寸分组，返回包含的订单以及披萨数量
+#### 按照披萨订单尺寸分组，返回包含的订单以及披萨数量
 
 ```js
 db.getCollection("orders").aggregate([
@@ -666,7 +700,7 @@ db.getCollection("orders").aggregate([
 
 >  这里的 `$$ROOT` 是 MongoDB 中内置的系统变量，引用了根文档（顶级文档），这里通过该变量和 `$push` 操作，将文档放到了分组后新文档的 `orders` 字段，更多系统变量见下一章节。
 
-#### $facet
+### 多切面文档聚合 $facet
 
 `$facet` 用于在一个 stage 中对同一批文档执行多个聚合管道处理。每一个聚合管道的输出文档都有自己的字段，最终输出是这些管道的结果数组。
 
@@ -820,7 +854,7 @@ db.artwork.aggregate( [
 }
 ```
 
-#### $unwind
+### 数组元素拆分为文档 $unwind
 
 `$unwind` 用于将输入文档中的数组字段解构，为数组中的每一个元素生成一个独立的文档，简单说就是将一条数据拆分为多条。
 
@@ -865,56 +899,144 @@ db.inventory.aggregate([ { $unwind: "$sizes" } ])
 { "_id" : 1, "item" : "ABC1", "sizes" : "L" }
 ```
 
-### 系统变量
+### 文档分桶 $bucket
 
-聚合表单时可以使用系统变量或者用户自定义的变量，变量可以是任意的 BSON 类型数据，要访问变量的值，使用前缀 `$$`， 如 `$$<variable>`。
+按照指定的表达式和边界对输入的文档进行分组，这里的分组称之为 存储桶，每个桶作为一个文档输出。每一个输出的文档都包含了一个 `_id` 字段，该字段表示了桶的下边界。
 
-如果变量引用的是一个对象，可以这样访问指定的字段 `$$<variable>.<field>`。
+![image-20220530141245217](https://raw.githubusercontent.com/mylxsw/gallery/main/assets/2022/05/30/141245-a37ed68dc54df0d085f63cf2ca7cc0bf-image-20220530141245217.png)
 
-MongoDB 中定义了以下系统变量
-
-| 变量         | 描述                                                         |
-| ------------ | ------------------------------------------------------------ |
-| NOW          | 当前日期时间                                                 |
-| CLUSTER_TIME | 当前时间戳，`CLUSTER_TIME` 只在副本集和分片集群中有效        |
-| ROOT         | 引用根文档                                                   |
-| CURRENT      | 引用聚合管道正在处理的字段路径开始部分，除非特别说明，所有的 stage 开始的时候 `$CURRENT` 都和 `$ROOT` 相同。`$CURRENT` 是可修改的，`$<field>` 等价于 `$$CURRENT.<field>`，重新绑定 `CURRENT` 会改变 `$` 的含义 |
-| REMOVE       | 标识值为缺失，用于按条件来排除字段，配合 `$project`使用时，把一个字段设置为变量 `REMOVE` 可以在输出中排除这个字段，参考 [有条件的排除字段](https://www.mongodb.com/docs/manual/reference/operator/aggregation/project/#std-label-remove-example) |
-| DESCEND      | [`$redact`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/redact/#mongodb-pipeline-pipe.-redact) 表达式允许的结果之一 |
-| PRUNE        | [`$redact`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/redact/#mongodb-pipeline-pipe.-redact) 表达式允许的结果之一 |
-| KEEP         | [`$redact`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/redact/#mongodb-pipeline-pipe.-redact) 表达式允许的结果之一 |
-
-以 `$$REMOVE` 为例，说明系统变量的使用
+语法如下
 
 ```js
-db.books.aggregate( [
-   {
-      $project: {
-         title: 1,
-         "author.first": 1,
-         "author.last" : 1,
-         "author.middle": {
-            // 这里判断 $author.middle 是否为空，为空则将该字段移除，否则返回该字段
-            $cond: {
-               if: { $eq: [ "", "$author.middle" ] },
-               then: "$$REMOVE",
-               else: "$author.middle"
-            }
-         }
+{
+  $bucket: {
+      groupBy: <expression>,
+      boundaries: [ <lowerbound1>, <lowerbound2>, ... ],
+      default: <literal>,
+      output: {
+         <output1>: { <$accumulator expression> },
+         ...
+         <outputN>: { <$accumulator expression> }
       }
    }
+}
+```
+
+参数说明
+
+- `groupBy` 文档分组表达式
+- `boundaries`：基于 `groupBy` 表达式分组的值数组，数组中的值指定了每一个桶的边界。相邻的两个值分别为桶的上边界和下边界，指定的值类型必须相同并且正序排列。例如 `[0, 5, 10]` 创建了两个桶，`[0, 5)` 和 `[5, 10)`
+- `default`：可选，当 `groupBy` 结果不在 `boundaries` 的范围内时，将结果放在 `default` 指定的桶中（该参数指定了桶的 `_id`）
+- `output`：可选，指定文档中包含到输出文档中的字段，默认只有  `_id` 字段
+
+`$bucket` 的使用必须满足以下条件之一
+
+- 每一个输入文档经过 `groupBy` 之后都在桶边界范围 `boundaries` 内
+- 当包含不再桶边界范围内的值时，必须指定 `default` 参数
+
+在 MongoDB 中插入以下文档
+
+```js
+db.artists.insertMany([
+  { "_id" : 1, "last_name" : "Bernard", "first_name" : "Emil", "year_born" : 1868, "year_died" : 1941, "nationality" : "France" },
+  { "_id" : 2, "last_name" : "Rippl-Ronai", "first_name" : "Joszef", "year_born" : 1861, "year_died" : 1927, "nationality" : "Hungary" },
+  { "_id" : 3, "last_name" : "Ostroumova", "first_name" : "Anna", "year_born" : 1871, "year_died" : 1955, "nationality" : "Russia" },
+  { "_id" : 4, "last_name" : "Van Gogh", "first_name" : "Vincent", "year_born" : 1853, "year_died" : 1890, "nationality" : "Holland" },
+  { "_id" : 5, "last_name" : "Maurer", "first_name" : "Alfred", "year_born" : 1868, "year_died" : 1932, "nationality" : "USA" },
+  { "_id" : 6, "last_name" : "Munch", "first_name" : "Edvard", "year_born" : 1863, "year_died" : 1944, "nationality" : "Norway" },
+  { "_id" : 7, "last_name" : "Redon", "first_name" : "Odilon", "year_born" : 1840, "year_died" : 1916, "nationality" : "France" },
+  { "_id" : 8, "last_name" : "Diriks", "first_name" : "Edvard", "year_born" : 1855, "year_died" : 1930, "nationality" : "Norway" }
+])
+```
+
+下面的操作将会把文档基于 `year_born` 字段分组，然后基于桶中的文档数量进行过滤
+
+```js
+db.artists.aggregate( [
+  // First Stage
+  {
+    $bucket: {
+      groupBy: "$year_born",                        // Field to group by
+      boundaries: [ 1840, 1850, 1860, 1870, 1880 ], // Boundaries for the buckets
+      default: "Other",                             // Bucket id for documents which do not fall into a bucket
+      output: {                                     // Output for each bucket
+        "count": { $sum: 1 },
+        "artists" :
+          {
+            $push: {
+              "name": { $concat: [ "$first_name", " ", "$last_name"] },
+              "year_born": "$year_born"
+            }
+          }
+      }
+    }
+  },
+  // Second Stage
+  {
+    $match: { count: {$gt: 3} }
+  }
 ] )
 ```
 
-> 这里的 [`$cond`](https://www.mongodb.com/docs/manual/reference/operator/aggregation/cond/) 操作符用于计算一个 Bool 表达式，类似于编程语言中的三元运算符。
+输出如下
 
-## 单一功能的聚合方法
+```js
+{ "_id" : 1860, "count" : 4, "artists" :
+  [
+    { "name" : "Emil Bernard", "year_born" : 1868 },
+    { "name" : "Joszef Rippl-Ronai", "year_born" : 1861 },
+    { "name" : "Alfred Maurer", "year_born" : 1868 },
+    { "name" : "Edvard Munch", "year_born" : 1863 }
+  ]
+}
+```
 
-主要有这些方法可以直接使用
+### 文档自动分桶 $bucketAuto
 
-- [`db.collection.estimatedDocumentCount()`](https://www.mongodb.com/docs/manual/reference/method/db.collection.estimatedDocumentCount/#mongodb-method-db.collection.estimatedDocumentCount) 返回集合或者视图中所有文档的总数量，实际上是对 `count` 方法的封装，只不过不支持 filter 参数
-- [`db.collection.count()`](https://www.mongodb.com/docs/manual/reference/method/db.collection.count/#mongodb-method-db.collection.count) 返回集合或者视图中的文档数量
-- [`db.collection.distinct()`](https://www.mongodb.com/docs/manual/reference/method/db.collection.distinct/#mongodb-method-db.collection.distinct) 返回指定字段具有不同值的文档
+与 `$bucket` 功能一样，不过 `$bucketAuto` 会自动的确定桶的边界，并将文档均匀的分布到桶中。
+
+每一个桶中包含以下内容
+
+- `_id` 对象指定了桶的边界
+- `count` 字段包含了桶中的文档数量，如果没有指定 `output` 选项，默认会自动包含 `count` 字段
+
+语法如下
+
+```js
+{
+  $bucketAuto: {
+      groupBy: <expression>,
+      buckets: <number>,
+      output: {
+         <output1>: { <$accumulator expression> },
+         ...
+      }
+      granularity: <string>
+  }
+}
+```
+
+参数说明
+
+- `buckets` 指定了桶的个数
+- `granularity` 可选，指定了使用哪种类型的桶边界[首选序列（Preferred number）](https://en.wikipedia.org/wiki/Preferred_number)，支持的值有 `R5`，`R10`，`R20`，`R40`，`R80`，`1-2-5`，`E6`，`E12`，`E24`，`E48`，`E96`，`E192`，`POWERSOF2`
+
+查询不同年份范围死亡人口统计
+
+```js
+db.artists.aggregate([
+    { $bucketAuto: { groupBy: "$year_died", buckets: 4} }
+])
+```
+
+输出如下
+
+```json
+{ "_id" : { "min" : 1890.0, "max" : 1927.0 }, "count" : 2 }
+{ "_id" : { "min" : 1927.0, "max" : 1932.0 }, "count" : 2 }
+{ "_id" : { "min" : 1932.0, "max" : 1944.0 }, "count" : 2 }
+{ "_id" : { "min" : 1944.0, "max" : 1955.0 }, "count" : 2 }
+```
 
 ## 参考文档
 
