@@ -4,6 +4,8 @@
 
 本文是 MongoDB 新手入门 系列的第二篇，在本文中，我们将会讲解 MongoDB 的聚合框架，在看完本文后，读者可以掌握使用 MongoDB 进行常用的数据统计分析方法。
 
+本文将会持续修正和更新，最新内容请参考我的 [GITHUB](https://github.com/mylxsw) 上的 [程序猿成长计划](https://github.com/mylxsw/growing-up) 项目，欢迎 Star，更多精彩内容请 [follow me](https://github.com/mylxsw)。
+
 ## 简介
 
 ![image-20220530113736173](https://raw.githubusercontent.com/mylxsw/gallery/main/assets/2022/05/30/113736-7358ecd0f2dee5fd572cd77c082bd83c-image-20220530113736173.png)
