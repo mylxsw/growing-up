@@ -5,6 +5,7 @@
 ### ※ MongoDB 新手入门
 
 - [MongoDB 新手入门 - CRUD](/doc/MongoDB%20新手入门%20-%20CRUD.md)
+- [MongoDB 新手入门 - Aggregation.md](/doc/MongoDB%20新手入门%20-%20Aggregation.md)
 
 ### ※ MySQL 技术进阶
 
