@@ -123,6 +123,7 @@ MySQL 的 InnoDB 就是采用了 B+ 树作为默认的索引算法，前面我�
 
 ---
 
-- https://blog.csdn.net/yin767833376/article/details/81511377
-- https://time.geekbang.org/column/article/69236
-- https://www.codeproject.com/Articles/1158559/B-Tree-Another-Implementation-By-Java
+- [B Trees and B+ Trees. How they are useful in Databases](https://youtu.be/aZjYr87r1b8)
+- [BTree和B+Tree详解](https://blog.csdn.net/yin767833376/article/details/81511377)
+- [极客时间：MySQL实战45讲-深入浅出索引](https://time.geekbang.org/column/article/69236)
+- [B-Tree: Another Implementation By Java](https://www.codeproject.com/Articles/1158559/B-Tree-Another-Implementation-By-Java)
