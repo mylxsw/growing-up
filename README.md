@@ -13,6 +13,7 @@
 - [MySQL & MariaDB Online DDL 参考指南](/doc/MySQL&MariaDB-Online-DDL-参考指南.md)
 - 【50%】[MySQL进阶：事务、锁相关表以及死锁问题](/doc/mysql-lock-transaction.md)
 - 【0%】[MySQL进阶：Performance_Schema 简介](/doc/mysql-performance_schema.md)
+- [MySQL 数据库索引技术原理初探](/doc/MySQL数据库索引技术原理初探.md)
 
 ### ※ Linux学习进阶
 
