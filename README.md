@@ -34,6 +34,7 @@
 - [MySQL数据类型选型参考](/doc/MySQL数据类型选型参考.md)
 - [RabbitMQ发布订阅实战-实现延时重试队列](/doc/RabbitMQ发布订阅实战-实现延时重试队列.md)
 - [根据 MTBF & MTTR 评估系统可用性](/doc/根据MTBF&MTTR评估系统可用性.md)
+- [Java 字符串 split 的一个反直觉陷阱](/doc/Java字符串split的一个反直觉陷阱.md)
 
 ### ※ 跟我一起学Laravel
 
