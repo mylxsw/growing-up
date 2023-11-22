@@ -2,6 +2,10 @@
 
 ## 原创目录
 
+### ※ MISC
+
+- [爆火的截图生成代码项目核心功能竟然只是一条Prompt](/doc/爆火的截图生成代码项目核心功能竟然只是一条Prompt.md)
+
 ### ※ MongoDB 新手入门
 
 - [MongoDB 新手入门 - CRUD](/doc/MongoDB%20新手入门%20-%20CRUD.md)
