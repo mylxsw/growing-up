@@ -5,6 +5,7 @@
 ### ※ MISC
 
 - [爆火的截图生成代码项目核心功能竟然只是一条Prompt](/doc/爆火的截图生成代码项目核心功能竟然只是一条Prompt.md)
+- [AIdea 项目开发环境部署教程（一）前端 Flutter 环境搭建](/doc/AIdea%20项目开发环境部署教程（一）前端%20Flutter%20环境搭建.md)
 
 ### ※ MongoDB 新手入门
 
